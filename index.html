@@ -105,6 +105,8 @@ pre.prompt{white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospac
   background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:9px 11px;
   margin:8px 0 10px;max-height:260px;overflow:auto}
 button.primary{background:var(--accent-2);border-color:var(--accent-2);color:#fff;font-weight:700}
+header button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:6px 9px;cursor:pointer;display:flex;align-items:center}
+header button:hover{border-color:var(--accent)}
 button:disabled{opacity:.5;cursor:not-allowed}
 .rmsg{min-height:1.2em}
 .small{font-size:12.5px}
@@ -159,18 +161,18 @@ footer{padding:26px 24px 40px;color:var(--muted);font-size:12.5px;max-width:1440
 <body>
 <header><div class="hdr">
   <div class="brand">
-    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-      <rect x="1" y="14" width="5" height="11" rx="1" fill="var(--accent)"/>
-      <rect x="8" y="8" width="5" height="17" rx="1" fill="var(--accent-2)"/>
-      <rect x="15" y="3" width="5" height="22" rx="1" fill="var(--ink)"/>
-      <rect x="21" y="10" width="4" height="15" rx="1" fill="var(--accent)"/>
-    </svg>
+    <img src="data:image/png;base64,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" width="24" height="35" alt="EB Life Safety" style="display:block">
     <span class="brand-name">EB Life Safety</span>
     <span class="divider"></span>
     <span class="brand-app">SC Design</span>
   </div>
   <h1>SCRA Packages</h1>
-  <span class="pill" id="genstamp" style="margin-left:auto"></span>
+  <div class="row" style="margin-left:auto;gap:8px">
+    <button id="themeToggle" title="Toggle light / dark" aria-label="Toggle theme" style="padding:5px 9px">
+      <svg id="themeIcon" width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"></svg>
+    </button>
+    <span class="pill" id="genstamp"></span>
+  </div>
 </div></header>
 
 <div class="app">
@@ -259,6 +261,36 @@ function saveCfg(c){
   catch { return false; }
 }
 let CFG = loadCfg();
+
+/* ---------- appearance: light / dark / auto, remembered on this device ---- */
+const LS_THEME = "eb_scra_theme_v1";
+function getTheme(){ try { return localStorage.getItem(LS_THEME) || "auto"; } catch { return "auto"; } }
+function effectiveTheme(){
+  const t = getTheme();
+  if (t !== "auto") return t;
+  try { return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light"; }
+  catch { return "light"; }
+}
+const THEME_ICON = {
+  auto: '<path d="M10 3a7 7 0 1 0 0 14V3Z" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="7"/>',
+  light: '<circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M18 10h-2M4 10H2M15.5 4.5l-1.4 1.4M5.9 14.1l-1.4 1.4M15.5 15.5l-1.4-1.4M5.9 5.9 4.5 4.5" stroke-linecap="round"/>',
+  dark: '<path d="M16.6 12.5A6.8 6.8 0 0 1 7.5 3.4 7 7 0 1 0 16.6 12.5Z"/>'
+};
+const THEME_LABEL = {auto:"Auto (matches system)", light:"Light", dark:"Dark"};
+function applyTheme(){
+  const t = getTheme();
+  if (t === "auto") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", t);
+  const icon = $("#themeIcon"), btn = $("#themeToggle");
+  if (icon) icon.innerHTML = THEME_ICON[t] || THEME_ICON.auto;
+  if (btn) btn.title = "Appearance: " + THEME_LABEL[t] + ". Click to change.";
+}
+function cycleTheme(){
+  const order = ["auto","light","dark"];
+  const next = order[(order.indexOf(getTheme()) + 1) % order.length];
+  try { next === "auto" ? localStorage.removeItem(LS_THEME) : localStorage.setItem(LS_THEME, next); } catch {}
+  applyTheme();
+}
 
 function readCache(){
   try { return JSON.parse(localStorage.getItem(LS_CACHE) || "null"); }
@@ -1424,6 +1456,10 @@ function render(){
   else { main.innerHTML = viewList(); wireList(); }
   window.scrollTo(0,0);
 }
+
+applyTheme();
+const themeBtn = $("#themeToggle");
+if (themeBtn) themeBtn.addEventListener("click", cycleTheme);
 
 if (!setupFromHash()) boot();
 </script>
