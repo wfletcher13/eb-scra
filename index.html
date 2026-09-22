@@ -6,69 +6,85 @@
 <title>SCRA Packages</title>
 <style>
 :root{
-  --bg:#f6f7f8; --panel:#fff; --ink:#16191d; --muted:#61696f; --line:#dfe3e7;
-  --accent:#1f5f8b; --accent-soft:#e8f0f6;
-  --measured:#146b3c; --measured-bg:#e4f3ea;
-  --placeholder:#8a5a00; --placeholder-bg:#fdf2dc;
-  --derived:#3a4a7a; --derived-bg:#eaeefa;
-  --stated:#4a4f55; --stated-bg:#eef0f2;
-  --missing:#9a2222; --missing-bg:#fbeaea;
-  --warn:#9a2222; --warn-bg:#fbeaea;
+  --bg:#f2f6f3; --panel:#fff; --panel-2:#f7faf7; --ink:#12304a; --muted:#5a6b72; --line:#dbe5dd;
+  --accent:#1c6b34; --accent-2:#154f27; --accent-soft:#e7f1e9; --accent-strong:#0f3d1e;
+  --sidebar:#0f2e22; --sidebar-ink:#dce9e0; --sidebar-muted:#9fb6a9; --sidebar-active:#1c6b34;
+  --measured:#166a38; --measured-bg:#e3f2e7;
+  --placeholder:#9a6a00; --placeholder-bg:#fbf0d8;
+  --derived:#2a4f8a; --derived-bg:#e7edf8;
+  --stated:#4a545c; --stated-bg:#eef1f2;
+  --missing:#a32626; --missing-bg:#fbe9e9;
+  --warn:#a32626; --warn-bg:#fbe9e9;
+  --shadow:0 1px 2px rgba(15,46,34,.05),0 4px 14px rgba(15,46,34,.06);
+  --radius:10px;
 }
 :root:not([data-theme="light"]){
   @media (prefers-color-scheme: dark){
-    --bg:#15181b; --panel:#1d2126; --ink:#e8eaec; --muted:#98a1a9; --line:#2f353c;
-    --accent:#6fb1dc; --accent-soft:#1c2a35;
-    --measured:#6cd39a; --measured-bg:#14301f;
+    --bg:#0e1512; --panel:#161f1a; --panel-2:#131a16; --ink:#e6ede8; --muted:#9db2a6; --line:#28352d;
+    --accent:#5fc785; --accent-2:#8fdcaa; --accent-soft:#173226; --accent-strong:#9fe6b8;
+    --sidebar:#0a1a13; --sidebar-ink:#dce9e0; --sidebar-muted:#7f9a8a; --sidebar-active:#1f4a30;
+    --measured:#7fe0a4; --measured-bg:#122a1c;
     --placeholder:#e8b25e; --placeholder-bg:#33260f;
     --derived:#9db0ea; --derived-bg:#1b2238;
     --stated:#aab2ba; --stated-bg:#252a30;
     --missing:#ef8d8d; --missing-bg:#33191a;
     --warn:#ef8d8d; --warn-bg:#33191a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#15181b; --panel:#1d2126; --ink:#e8eaec; --muted:#98a1a9; --line:#2f353c;
-  --accent:#6fb1dc; --accent-soft:#1c2a35;
-  --measured:#6cd39a; --measured-bg:#14301f;
+  --bg:#0e1512; --panel:#161f1a; --panel-2:#131a16; --ink:#e6ede8; --muted:#9db2a6; --line:#28352d;
+  --accent:#5fc785; --accent-2:#8fdcaa; --accent-soft:#173226; --accent-strong:#9fe6b8;
+  --sidebar:#0a1a13; --sidebar-ink:#dce9e0; --sidebar-muted:#7f9a8a; --sidebar-active:#1f4a30;
+  --measured:#7fe0a4; --measured-bg:#122a1c;
   --placeholder:#e8b25e; --placeholder-bg:#33260f;
   --derived:#9db0ea; --derived-bg:#1b2238;
   --stated:#aab2ba; --stated-bg:#252a30;
   --missing:#ef8d8d; --missing-bg:#33191a;
   --warn:#ef8d8d; --warn-bg:#33191a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:15px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-a{color:var(--accent);text-decoration:none}
+a{color:var(--accent-2);text-decoration:none}
 a:hover{text-decoration:underline}
-header{background:var(--panel);border-bottom:1px solid var(--line);
-  padding:14px 16px;position:sticky;top:0;z-index:5}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
-.hdr{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
-h1{font-size:18px;margin:0;letter-spacing:.2px}
-h2{font-size:16px;margin:26px 0 10px}
-h3{font-size:14px;margin:18px 0 8px;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.6px}
-nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
-button{font:inherit;color:var(--ink);background:var(--panel);
-  border:1px solid var(--line);border-radius:6px;padding:5px 11px;cursor:pointer}
-button:hover{border-color:var(--accent)}
-button[aria-current="true"]{background:var(--accent-soft);border-color:var(--accent);
-  color:var(--accent);font-weight:600}
+header{background:var(--panel);border-bottom:3px solid var(--accent-2);
+  padding:12px 20px;position:sticky;top:0;z-index:6;box-shadow:var(--shadow)}
+.hdr{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1440px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .divider{width:1px;height:22px;background:var(--line)}
+.brand-name{font-weight:800;font-size:16px;letter-spacing:.1px}
+.brand-app{font-size:16px;color:var(--muted);font-weight:600}
+h1{font-size:16px;margin:0;letter-spacing:.2px;display:none}
+h2{font-size:22px;margin:0 0 4px;font-weight:800;color:var(--ink)}
+h3{font-size:13px;margin:0 0 10px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.app{display:flex;max-width:1440px;margin:0 auto;align-items:flex-start}
+aside{width:200px;flex:0 0 200px;background:var(--sidebar);min-height:calc(100vh - 58px);
+  padding:18px 10px;position:sticky;top:58px;align-self:flex-start}
+nav{display:flex;flex-direction:column;gap:2px}
+aside button{font:inherit;color:var(--sidebar-ink);background:transparent;border:1px solid transparent;
+  border-radius:7px;padding:9px 11px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:9px;width:100%}
+aside button svg{flex:0 0 16px;opacity:.85}
+aside button:hover{background:rgba(255,255,255,.06)}
+aside button[aria-current="true"]{background:var(--sidebar-active);color:#fff;font-weight:700}
+aside button[aria-current="true"] svg{opacity:1}
+main{flex:1 1 auto;min-width:0;padding:22px 24px 60px}
+.wrap{max-width:1180px;margin:0 auto;padding:0}
 .ro{background:var(--accent-soft);border:1px solid var(--line);border-left:3px solid var(--accent);
-  border-radius:6px;padding:9px 12px;margin:14px 0;font-size:13px;color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;
-  padding:14px 16px;margin:12px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  border-radius:var(--radius);padding:10px 13px;margin:14px 0;font-size:13px;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;margin:12px 0;box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
-th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
-th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:700;font-size:11.5px;text-transform:uppercase;
   letter-spacing:.5px;white-space:nowrap}
 tbody tr:hover{background:var(--accent-soft)}
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;
-  padding:1px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
+  padding:2px 7px;border-radius:99px;border:1px solid;white-space:nowrap}
 .c-measured{color:var(--measured);background:var(--measured-bg);border-color:var(--measured)}
 .c-placeholder{color:var(--placeholder);background:var(--placeholder-bg);
   border-color:var(--placeholder);border-style:dashed}
@@ -77,60 +93,105 @@ tbody tr:hover{background:var(--accent-soft)}
 .c-sourcedoc{color:var(--stated);background:var(--stated-bg);border-color:var(--stated)}
 .c-missing{color:var(--missing);background:var(--missing-bg);border-color:var(--missing)}
 .absent{color:var(--muted);font-style:italic}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13.5px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:13.5px}
 .kv dt{color:var(--muted)}
 .kv dd{margin:0}
-.banner{border-radius:8px;padding:10px 13px;margin:12px 0;font-size:13.5px;
+.banner{border-radius:var(--radius);padding:10px 13px;margin:12px 0;font-size:13.5px;
   background:var(--warn-bg);border:1px solid var(--warn);color:var(--warn)}
 .muted{color:var(--muted)}
-.ok{border-radius:8px;padding:10px 13px;margin:12px 0;font-size:13.5px;
+.ok{border-radius:var(--radius);padding:10px 13px;margin:12px 0;font-size:13.5px;
   background:var(--measured-bg);border:1px solid var(--measured);color:var(--measured)}
 pre.prompt{white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px;
+  background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:9px 11px;
   margin:8px 0 10px;max-height:260px;overflow:auto}
-button.primary{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:600}
+button.primary{background:var(--accent-2);border-color:var(--accent-2);color:#fff;font-weight:700}
 button:disabled{opacity:.5;cursor:not-allowed}
 .rmsg{min-height:1.2em}
 .small{font-size:12.5px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.pill{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);
-  background:var(--bg);color:var(--muted)}
-input[type=search],select{font:inherit;padding:5px 9px;border:1px solid var(--line);
-  border-radius:6px;background:var(--panel);color:var(--ink)}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--muted);font-weight:600}
+.pill-track{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-2)}
+.pill-sealed{background:var(--measured-bg);border-color:var(--measured);color:var(--measured)}
+.pill-unsealed{background:var(--stated-bg);border-color:var(--stated);color:var(--stated)}
+main button:not(aside button){font:inherit;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:7px;padding:6px 12px;cursor:pointer}
+main button:not(aside button):hover{border-color:var(--accent)}
+main button[data-tab]{border-radius:0;border:none;border-bottom:2px solid transparent;
+  padding:8px 4px;margin-right:18px;background:transparent;color:var(--muted);font-weight:600}
+main button[data-tab]:hover{border-color:var(--line);color:var(--ink)}
+main button[data-tab][aria-current="true"]{border-color:var(--accent-2);color:var(--accent-2);background:transparent}
+input[type=search],select{font:inherit;padding:6px 10px;border:1px solid var(--line);
+  border-radius:7px;background:var(--panel);color:var(--ink)}
 .bar{height:9px;background:var(--line);border-radius:5px;overflow:hidden;
   display:flex;min-width:120px}
 .bar i{display:block;height:100%}
-details{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0;
+details{border:1px solid var(--line);border-radius:var(--radius);padding:8px 12px;margin:8px 0;
   background:var(--panel)}
 summary{cursor:pointer;font-weight:600;font-size:13.5px}
-.sysgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.sysgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
 .dpline{position:relative;height:30px;margin:6px 0 2px}
 .dpline .track{position:absolute;top:13px;left:0;right:0;height:4px;
   background:var(--line);border-radius:2px}
 .dpline .band{position:absolute;top:9px;height:12px;background:var(--accent-soft);
   border-left:1px solid var(--accent);border-right:1px solid var(--accent)}
-.dpline .span{position:absolute;top:12px;height:6px;background:var(--accent);border-radius:3px}
+.dpline .span{position:absolute;top:12px;height:6px;background:var(--accent-2);border-radius:3px}
 .dpline .tick{position:absolute;top:2px;font-size:10px;color:var(--muted)}
 svg text{fill:var(--muted);font-size:10px}
-footer{padding:26px 16px 40px;color:var(--muted);font-size:12.5px}
-@media (max-width:640px){ .hdr{gap:8px} nav{width:100%} h1{font-size:16px} }
+footer{padding:26px 24px 40px;color:var(--muted);font-size:12.5px;max-width:1440px;margin:0 auto}
+.stattiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.stattile{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+.stattile .num{font-size:28px;font-weight:800;line-height:1}
+.stattile .lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.stattile svg{flex:0 0 22px;opacity:.7}
+.sysicon{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sysicon svg{flex:0 0 40px;height:40px;background:var(--accent-soft);border-radius:8px;padding:5px}
+@media (max-width:900px){
+  aside{position:static;width:auto;flex:none;min-height:0;display:flex;overflow-x:auto}
+  nav{flex-direction:row}
+  .app{flex-direction:column}
+  main{padding:16px}
+}
+@media (max-width:640px){ .hdr{gap:8px} h2{font-size:19px} }
 </style>
 </head>
 <body>
-<header><div class="wrap hdr">
+<header><div class="hdr">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+      <rect x="1" y="14" width="5" height="11" rx="1" fill="var(--accent)"/>
+      <rect x="8" y="8" width="5" height="17" rx="1" fill="var(--accent-2)"/>
+      <rect x="15" y="3" width="5" height="22" rx="1" fill="var(--ink)"/>
+      <rect x="21" y="10" width="4" height="15" rx="1" fill="var(--accent)"/>
+    </svg>
+    <span class="brand-name">EB Life Safety</span>
+    <span class="divider"></span>
+    <span class="brand-app">SC Design</span>
+  </div>
   <h1>SCRA Packages</h1>
-  <span class="pill" id="genstamp"></span>
-  <nav>
-    <button data-view="list" aria-current="true">Projects</button>
-    <button data-view="trends">Trends</button>
-    <button data-view="about">Provenance</button>
-    <button data-view="settings">Settings</button>
-  </nav>
+  <span class="pill" id="genstamp" style="margin-left:auto"></span>
 </div></header>
 
+<div class="app">
+<aside><nav>
+  <button data-view="list" aria-current="true">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6.5 10 3l7 3.5v8.5a1 1 0 0 1-1 1h-3v-5H7v5H4a1 1 0 0 1-1-1V6.5Z" stroke-linejoin="round"/></svg>
+    Projects</button>
+  <button data-view="trends">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 16.5V3.5M3 16.5h14" stroke-linecap="round"/><path d="M6 13.5v-4M10 13.5V6M14 13.5v-7" stroke-linecap="round"/></svg>
+    Trends</button>
+  <button data-view="about">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.2v.1" stroke-linecap="round"/></svg>
+    Provenance</button>
+  <button data-view="settings">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="2.6"/><path d="M10 2.7v2M10 15.3v2M17.3 10h-2M4.7 10h-2M15.2 4.8l-1.4 1.4M6.2 13.8l-1.4 1.4M15.2 15.2l-1.4-1.4M6.2 6.2 4.8 4.8" stroke-linecap="round"/></svg>
+    Settings</button>
+</nav></aside>
 <main class="wrap" id="main"></main>
+</div>
 
-<footer class="wrap">
+<footer>
   Read only. The record is the source of truth and this page is a lens over it.
   Deleting the viewer loses nothing. This page holds no project data of its own:
   it reads the local <code>packages.js</code> bundle, or a private repository with
@@ -358,6 +419,33 @@ function cfmChip(v){
   if (n === null) return ABSENT + " " + chipHtml("missing");
   return `${n.toLocaleString("en-US",{maximumFractionDigits:0})} ${chipHtml(chipOf(v))}`;
 }
+/* ---------- lightweight schematic icons per system type ------------------- */
+const SYS_ICON = {
+  stair: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><path d="M10 30h4v-5h4v-5h4v-5h4v-5h4" stroke-linejoin="round"/><path d="M32 8v3M32 8h-3" stroke-linecap="round"/></svg>`,
+  elevator: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><rect x="15" y="12" width="10" height="18" rx="1"/><path d="M20 10v14M17 14l3-3 3 3M17 21l3 3 3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  vestibule: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><path d="M12 10v20M28 10v20" /><path d="M16 20h8M16 20l3-2.5M16 20l3 2.5M24 20l-3-2.5M24 20l-3 2.5" stroke-linecap="round"/></svg>`,
+  atrium: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><path d="M10 30V12M30 30V12M10 12l10-6 10 6" stroke-linejoin="round"/><path d="M17 8v4M20 6v6M23 8v4" stroke-linecap="round"/><path d="M14 26h12" stroke-linecap="round"/></svg>`,
+  zoned: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><path d="M4 14h32M4 24h32M14 4v32M27 4v32" stroke="var(--line)"/><path d="M9 19h4M27 19h4" stroke-linecap="round"/></svg>`,
+  other: `<svg viewBox="0 0 40 40" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="4" y="4" width="32" height="32" rx="3" fill="var(--panel)" stroke="var(--line)"/><rect x="12" y="10" width="16" height="20" rx="1"/><path d="M16 14h2M22 14h2M16 19h2M22 19h2M16 24h2M22 24h2" stroke-linecap="round"/></svg>`
+};
+function sysIconFor(cls, s){
+  if (cls === "stair") return SYS_ICON.stair;
+  if (cls === "elevator") return SYS_ICON.elevator;
+  const label = String((s && s.label) || "").toLowerCase();
+  if (label.includes("vestibule")) return SYS_ICON.vestibule;
+  if (label.includes("atrium")) return SYS_ICON.atrium;
+  if (label.includes("zone") || label.includes("zoned")) return SYS_ICON.zoned;
+  return SYS_ICON.other;
+}
+function statTile(n, label, icon){
+  return `<div class="stattile">${icon}<div><div class="num">${n}</div><div class="lbl">${esc(label)}</div></div></div>`;
+}
+const STAT_ICON = {
+  boxes: `<svg viewBox="0 0 20 20" fill="none" stroke="var(--accent-2)" stroke-width="1.6"><rect x="3" y="3" width="6.5" height="6.5" rx="1"/><rect x="10.5" y="3" width="6.5" height="6.5" rx="1"/><rect x="3" y="10.5" width="6.5" height="6.5" rx="1"/><rect x="10.5" y="10.5" width="6.5" height="6.5" rx="1"/></svg>`,
+  seal: `<svg viewBox="0 0 20 20" fill="none" stroke="var(--measured)" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M7 10.3 9 12.3 13.3 8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  warn: `<svg viewBox="0 0 20 20" fill="none" stroke="var(--missing)" stroke-width="1.6"><path d="M10 3 17.5 16h-15L10 3Z" stroke-linejoin="round"/><path d="M10 8.3v3.4M10 14.2v.1" stroke-linecap="round"/></svg>`,
+  gauge: `<svg viewBox="0 0 20 20" fill="none" stroke="var(--placeholder)" stroke-width="1.6"><path d="M3 15a7 7 0 0 1 14 0" stroke-linecap="round"/><path d="M10 15 13 9" stroke-linecap="round"/></svg>`
+};
 function systemsOf(rec){
   const out = [];
   (rec.stairs||[]).forEach(s => out.push({cls:"stair", s}));
@@ -408,10 +496,20 @@ document.querySelectorAll("nav button").forEach(b => {
 /* ---------- views --------------------------------------------------------- */
 function viewList(){
   const pkgs = DATA.index.packages;
+  const total = pkgs.length;
+  const measuredCt = pkgs.filter(p => p.measured).length;
+  const blockingCt = pkgs.filter(p => p.conflicts && p.conflicts.open_blocking > 0).length;
+  const sealedCt = pkgs.filter(p => p.seal && p.seal.sealed).length;
+  const stats = `<div class="stattiles">
+    ${statTile(total, "Active packages", STAT_ICON.boxes)}
+    ${statTile(sealedCt, "Sealed", STAT_ICON.seal)}
+    ${statTile(blockingCt, "With blocking items", STAT_ICON.warn)}
+    ${statTile(measuredCt, "With measured sizing", STAT_ICON.gauge)}
+  </div>`;
   const rows = pkgs.map(p => {
     const c = p.conflicts, cov = p.coverage || {};
     const track = p.building_status
-      ? `<span class="pill">${esc(p.building_status === "new" ? "New" : "Existing")}</span>`
+      ? `<span class="pill pill-track">${esc(p.building_status === "new" ? "New" : "Existing")}</span>`
       : `<span class="chip c-missing">Missing</span>`;
     const meas = p.measured
       ? chipHtml("measured")
@@ -427,7 +525,7 @@ function viewList(){
           ${p.counts.other} other</td>
       <td>${meas}</td>
       <td>${c.open}${blocking}<div class="small muted">${c.resolved} resolved</div></td>
-      <td>${p.seal.sealed ? "sealed" : '<span class="muted">not sealed</span>'}
+      <td>${p.seal.sealed ? '<span class="pill pill-sealed">sealed</span>' : '<span class="pill pill-unsealed">not sealed</span>'}
           ${(p.lint && p.lint.ran && p.lint.errors)
             ? `<div><span class="chip c-missing">${p.lint.errors} lint error</span></div>` : ""}</td>
       <td class="small">${esc(p.lastWriteBy||"")}<div class="muted">${esc(p.lastWriteAt||"")}</div></td>
@@ -435,6 +533,9 @@ function viewList(){
   }).join("");
 
   return `
+  <h2>Smoke control packages</h2>
+  <p class="muted" style="margin:0 0 4px">Rational analysis, sizing and coordination across all projects.</p>
+  ${stats}
   <div class="ro"><strong>Read only.</strong> This page never writes to a package.
     Resolving an open item happens in the record, through the lane that owns it.
     A viewer that could write would be a second place the truth lives.</div>
@@ -601,8 +702,8 @@ function tabSystems(rec){
     const spreadNote = (spread !== undefined && spread !== null && spread > 1.8)
       ? ` <span class="chip c-missing">wide</span>` : "";
     return `<div class="card">
-      <div class="row"><strong>${esc(s.label||s.id)}</strong>
-        <span class="pill">${cls}</span>
+      <div class="sysicon">${sysIconFor(cls, s)}<strong style="font-size:15px">${esc(s.label||s.id)}</strong></div>
+      <div class="row"><span class="pill">${cls}</span>
         ${cls==="elevator" ? `<span class="pill">${esc(s.basis||"basis not recorded")}</span>`:""}
         ${cls==="stair" ? `<span class="pill">${s.vestibule_pressurized
           ? "vestibule, pressurized" : s.vestibule ? "vestibule" : "no vestibule"}</span>`:""}
