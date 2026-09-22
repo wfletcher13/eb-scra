@@ -83,6 +83,14 @@ tbody tr:hover{background:var(--accent-soft)}
 .banner{border-radius:8px;padding:10px 13px;margin:12px 0;font-size:13.5px;
   background:var(--warn-bg);border:1px solid var(--warn);color:var(--warn)}
 .muted{color:var(--muted)}
+.ok{border-radius:8px;padding:10px 13px;margin:12px 0;font-size:13.5px;
+  background:var(--measured-bg);border:1px solid var(--measured);color:var(--measured)}
+pre.prompt{white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px;
+  margin:8px 0 10px;max-height:260px;overflow:auto}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--panel);font-weight:600}
+button:disabled{opacity:.5;cursor:not-allowed}
+.rmsg{min-height:1.2em}
 .small{font-size:12.5px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .pill{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);
@@ -469,7 +477,7 @@ function viewProject(slug, sub){
   if (!rec) return `<div class="banner">No package named ${esc(slug)} in this index.</div>`;
   const info = rec.info||{}, bld = rec.building||{}, meta = rec._meta||{}, seal = rec.seal||{};
   const open = openConflicts(rec), blocking = open.filter(c => c.blocking);
-  const tabs = ["overview","systems","cases","conflicts","files"];
+  const tabs = ["overview","systems","cases","conflicts","files","report"];
   const cur = tabs.includes(sub) ? sub : "overview";
   const nav = tabs.map(t =>
     `<button data-tab="${t}" aria-current="${t===cur}"
@@ -498,7 +506,7 @@ function viewProject(slug, sub){
     <div class="row" style="margin:14px 0 2px">${nav}</div>`;
 
   const body = {overview:tabOverview, systems:tabSystems, cases:tabCases,
-                conflicts:tabConflicts, files:tabFiles}[cur](rec);
+                conflicts:tabConflicts, files:tabFiles, report:tabReport}[cur](rec, slug);
   return head + body;
 }
 
@@ -781,6 +789,240 @@ function tabFiles(rec){
       <tbody>${files.map(f => `<tr><td>${esc(f.name||f.id)}</td><td>${esc(f.kind||"")}</td>
         <td>${esc(f.addedBy||"")}</td><td>${esc(f.addedAt||"")}</td></tr>`).join("")}
       </tbody></table></div>`;
+}
+
+/* ---------- report: hand the record to Claude or Grokbot ------------------
+   The SC Inspect pattern. The Word document is built by the eb-scra plugin's
+   own engine (scra-report skill) in a Claude session, never in this page. The
+   viewer only composes the ask: a prompt for Claude, or a Handoff packet for
+   the Grokbot desks. Nothing here writes to the record, the repository or the
+   folder. A packet carries paths and state, never numbers: measured values do
+   not travel through Handoff, the package folder is their source of truth. */
+
+const CHASSIS = {
+  new:      {label: "New construction", asset: "SCRA_TEMPLATE_New_AnyCount.docx"},
+  existing: {label: "Existing building", asset: "SCRA_TEMPLATE_Existing_AnyCount.docx"}
+};
+
+function walkValues(o, fn){
+  if (!o || typeof o !== "object") return;
+  if (Array.isArray(o)){ o.forEach(x => walkValues(x, fn)); return; }
+  if ("value" in o && ("source" in o || "measured" in o || "placeholder" in o)) fn(o);
+  Object.values(o).forEach(x => walkValues(x, fn));
+}
+
+function reportState(slug, rec){
+  const pkg = (DATA.index.packages || []).find(x => x.slug === slug) || {};
+  const bs = (rec.building || {}).building_status || null;
+  const open = openConflicts(rec), blocking = open.filter(c => c.blocking);
+  let placeholders = 0, missing = 0;
+  [rec.stairs, rec.elevators, rec.other_systems].forEach(list => walkValues(list || [], v => {
+    if (v.placeholder || v.source === "trendline") placeholders++;
+    if (v.value === null) missing++;
+  }));
+  const lint = pkg.lint || {};
+  const lintErrors = lint.ran ? (lint.findings || []).filter(f => f.level === "ERROR") : [];
+  const meta = rec._meta || {}, run = (rec.contam || {}).run || {};
+  const chassis = CHASSIS[bs] || null;
+  const reasons = [];
+  if (blocking.length) reasons.push(blocking.length + " open blocking item" + (blocking.length > 1 ? "s" : "")
+    + " (" + blocking.map(c => c.id).join(", ") + ")");
+  if (placeholders) reasons.push(placeholders + " placeholder value" + (placeholders > 1 ? "s" : ""));
+  if (missing) reasons.push(missing + " missing value" + (missing > 1 ? "s" : ""));
+  if (lintErrors.length) reasons.push(lintErrors.length + " lint error" + (lintErrors.length > 1 ? "s" : ""));
+  if (lint.ran === false) reasons.push("lint did not run at index time");
+  return {
+    pkg, bs, chassis, open, blocking, placeholders, missing, lint, lintErrors, reasons,
+    name: (rec.info || {}).ProjectName || pkg.name || slug,
+    location: [(rec.info || {}).ProjectLocation].filter(Boolean).join(", ") || pkg.location || "",
+    ahj: (rec.info || {}).AHJ || null,
+    sealed: !!(rec.seal || {}).sealed,
+    lastWriteAt: meta.lastWriteAt || pkg.lastWriteAt || null,
+    lastWriteBy: meta.lastWriteBy || pkg.lastWriteBy || null,
+    stamp: run.stamp || pkg.stamp || null,
+    runId: run.run_id || pkg.run_id || null,
+    draftOnly: reasons.length > 0,
+    docs: (rec.files || []).map(f => f.name || f.id || "").filter(n => /(^|\/)docs\//.test(n) || /\.docx$/i.test(n))
+  };
+}
+
+function recordPath(slug){ return "Grokbot/SCRA-Projects/" + slug + "/project.json"; }
+function recordFileName(slug){ return slug + "_project.json"; }
+function todayET(){
+  try { return new Intl.DateTimeFormat("en-CA", {timeZone: "America/New_York"}).format(new Date()); }
+  catch { return new Date().toISOString().slice(0, 10); }
+}
+function versionLine(st){
+  return "last written " + (st.lastWriteAt || "(time not recorded)") + " by " + (st.lastWriteBy || "(not recorded)")
+    + (st.stamp ? ", Contam run " + st.stamp : ", no Contam run on the record");
+}
+function stateLine(st){
+  if (!st.chassis) return "The record has no building_status, so the chassis cannot be chosen. Stop and raise it as a conflict rather than picking one.";
+  return st.draftOnly
+    ? "Draft only, not sealable as it stands: " + st.reasons.join("; ") + "."
+    : "No open blocking items, placeholders, missing values or lint errors at index time.";
+}
+
+function claudePrompt(slug, rec){
+  const st = reportState(slug, rec);
+  return [
+    "Build the Smoke Control Rational Analysis Word report for \"" + st.name + "\" using the eb-scra plugin (scra-report skill).",
+    "",
+    "Record: " + recordPath(slug) + " on fletcher-pc. The folder copy is the source of truth. If this session cannot reach it, use the attached " + recordFileName(slug) + ", a read-only copy taken from the SCRA viewer (" + versionLine(st) + "). If the folder copy is newer than that, use the folder copy and say so.",
+    "",
+    "Chassis: " + (st.chassis ? st.chassis.label + " (building_status \"" + st.bs + "\", " + st.chassis.asset + ")" : "MISSING") + ".",
+    "State: " + stateLine(st),
+    "",
+    "Lint first. Report every lint ERROR, filled BLANK and placeholder rather than filling around it. Do not invent CFM, pressure difference, floor heights, leakage classes or pass/fail, and do not seal.",
+    "Write the draft to this building's Grokbot project folder, verify it by size and by opening it, and put a *_done.md note in Grokbot/Handoff/outbox/ naming the file, anything you changed on the record, and the open items."
+  ].join("\n");
+}
+
+function grokbotPacket(slug, rec){
+  const st = reportState(slug, rec), d = todayET();
+  const L = [];
+  L.push("# " + st.name + " SCRA report ready for Claude Desktop", "");
+  L.push("**Status:** ready  ", "**Date:** " + d + "  ", "**From:** SCRA viewer, for William  ",
+         "**For:** Claude Desktop (heavy Word)  ", "**Project:** " + st.name + (st.location ? ", " + st.location : "") + "  ",
+         "**Deliverable type:** SCRA  ",
+         "**Jurisdiction / code stack:** " + (st.ahj ? "AHJ " + st.ahj + "; confirm code editions from the record" : "AHJ not recorded on the record; confirm") + "  ", "");
+  L.push("## Bottom line ask", "",
+    "Build the SCRA Word report from `" + recordPath(slug) + "` with the eb-scra plugin, scra-report skill, on the "
+    + (st.chassis ? st.chassis.label.toLowerCase() + " chassis (`" + st.chassis.asset + "`)" : "chassis the record's building_status selects. building_status is MISSING, so stop and raise it") + ".", "");
+  L.push("## Inputs (links / paths)", "",
+    "- Record: `" + recordPath(slug) + "`. Read it as it is now. When this packet was made the viewer saw it " + versionLine(st) + ". If it is newer, use it and say so.",
+    "- Run evidence: " + (st.stamp ? "`Grokbot/SCRA-Projects/" + slug + "/runs/" + st.stamp + "/`" : "none on the record"),
+    "- Exemplar chassis: chosen by building_status, not by this packet",
+    "- Prior drafts indexed on the record: " + (st.docs.length ? st.docs.map(n => "`" + n + "`").join(", ") : "none"), "");
+  L.push("## Record state when this packet was made", "",
+    "- " + stateLine(st),
+    "- Open conflicts: " + st.open.length + " (" + st.blocking.length + " blocking)",
+    "- Sealed: " + (st.sealed ? "yes" : "no"), "");
+  L.push("## Constraints", "",
+    "- Numbers come from the record only. This packet carries none on purpose; measured values do not travel through Handoff.",
+    "- Do not invent CFM, pressure difference, floor heights, leakage classes, fees or pass/fail.",
+    "- Do not seal. `sealed` stays false until William sets it.",
+    "- The chassis follows building_status. If anything here disagrees with the record, the record wins; say so in the done note.",
+    "- No em dashes in William-facing prose.", "");
+  L.push("## Definition of done", "",
+    "- [ ] Draft .docx in this building's `Grokbot/{Project}/` folder, verified by size and by opening it",
+    "- [ ] Short `*_done.md` note in `Grokbot/Handoff/outbox/` with the path, any record changes, and next CoS action",
+    "- [ ] Every lint ERROR, filled BLANK and placeholder flagged explicitly", "");
+  return {name: d + "_" + slug + "_scra-report_ready.md", text: L.join("\n")};
+}
+
+function canShareFiles(){
+  try { return !!(navigator.canShare && navigator.share
+    && navigator.canShare({files: [new File(["{}"], "x.json", {type: "application/json"})]})); }
+  catch { return false; }
+}
+function downloadFile(file){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(file); a.download = file.name;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; } catch { return false; }
+}
+/* Share sheet where the device has one (phone to Claude, or to OneDrive),
+   otherwise a download. Returns "shared", "saved", or "cancelled". */
+async function shareOrSave(file, title){
+  if (canShareFiles()){
+    try { await navigator.share({files: [file], title}); return "shared"; }
+    catch (e){ if (e && e.name === "AbortError") return "cancelled"; }
+  }
+  try { downloadFile(file); return "saved"; } catch { return "failed"; }
+}
+function rmsg(id, t){ const el = document.getElementById(id); if (el) el.textContent = t; }
+
+async function reportSendClaude(slug){
+  const rec = DATA.records[slug]; if (!rec) return;
+  const copied = await copyText(claudePrompt(slug, rec));
+  const file = new File([JSON.stringify(rec, null, 2)], recordFileName(slug), {type: "application/json"});
+  const how = await shareOrSave(file, (reportState(slug, rec).name) + " SCRA record");
+  if (how === "cancelled"){ rmsg("rp_c_msg", copied ? "Prompt copied. Sharing cancelled." : "Sharing cancelled."); return; }
+  rmsg("rp_c_msg", {
+    shared: copied ? "Prompt copied and record shared. In Claude, paste the prompt and send it with the file."
+                   : "Record shared. Copy the prompt from the box and paste it in Claude.",
+    saved:  copied ? "Prompt copied and " + recordFileName(slug) + " saved. Attach it in Claude and paste the prompt."
+                   : recordFileName(slug) + " saved. Attach it in Claude with the prompt from the box.",
+    failed: copied ? "Prompt copied. The record could not be saved on this device; on fletcher-pc Claude reads the folder copy anyway."
+                   : "Nothing could be copied or saved here. Select the prompt text by hand."
+  }[how]);
+}
+async function reportCopyPrompt(slug){
+  const ok = await copyText(claudePrompt(slug, DATA.records[slug]));
+  rmsg("rp_c_msg", ok ? "Prompt copied. Paste it into a Claude chat with the eb-scra plugin enabled."
+                      : "Copy failed. Select the prompt text by hand.");
+}
+async function reportSavePacket(slug){
+  const pk = grokbotPacket(slug, DATA.records[slug]);
+  const how = await shareOrSave(new File([pk.text], pk.name, {type: "text/markdown"}), pk.name);
+  rmsg("rp_g_msg", {
+    shared: "Packet shared. Save it into Grokbot/Handoff/inbox/ in OneDrive.",
+    saved: pk.name + " saved. Move it into Grokbot/Handoff/inbox/ in OneDrive.",
+    cancelled: "Cancelled.",
+    failed: "Could not save here. Use Copy packet and paste it into a new file in the inbox."
+  }[how]);
+}
+async function reportCopyPacket(slug){
+  const ok = await copyText(grokbotPacket(slug, DATA.records[slug]).text);
+  rmsg("rp_g_msg", ok ? "Packet copied. Paste it into a new .md file in Grokbot/Handoff/inbox/."
+                      : "Copy failed. Select the packet text by hand.");
+}
+
+function tabReport(rec, slug){
+  const st = reportState(slug, rec), pk = grokbotPacket(slug, rec);
+  const js = s => esc(JSON.stringify(s));
+  const dis = st.chassis ? "" : " disabled";
+  const status = !st.chassis
+    ? `<div class="banner"><strong>Chassis MISSING.</strong> The record has no
+        building_status, so neither template can be chosen. Set it on the record first;
+        both hand-offs are held until then.</div>`
+    : st.draftOnly
+      ? `<div class="banner"><strong>Draft only.</strong> ${esc(st.reasons.join("; "))}.
+          A report can be built to review, but it cannot be sealed from this record as it stands.</div>`
+      : `<div class="ok"><strong>Ready to fill.</strong> No open blocking items, placeholders,
+          missing values or lint errors at index time. Sealing stays with William.</div>`;
+  return `
+  <p class="ro">The Word report is produced by the eb-scra plugin's own engine (scra-report
+    skill, the chassis templates and Table 2 rebuild) in a Claude session, not in this page.
+    This tab only composes the request. It writes nothing to the record.</p>
+  ${status}
+  <div class="card"><dl class="kv">
+    <dt>Chassis</dt><dd>${st.chassis ? esc(st.chassis.label) + ' <span class="muted small">' + esc(st.chassis.asset) + "</span>" : ABSENT}</dd>
+    <dt>Record</dt><dd class="small"><code>${esc(recordPath(slug))}</code></dd>
+    <dt>Version</dt><dd class="small">${esc(versionLine(st))}</dd>
+    <dt>Sealed</dt><dd>${st.sealed ? "yes" : "no"}</dd>
+  </dl></div>
+  <div class="sysgrid">
+    <div class="card">
+      <h3 style="margin-top:0">Word report via Claude</h3>
+      <p class="small muted">Send to Claude copies the prompt and shares this record to the
+        Claude app (or saves it, on a computer). In Claude, paste the prompt and send it with
+        the file. On fletcher-pc Claude reads the folder copy directly and the file is only a fallback.</p>
+      <pre class="prompt" id="rp_c_txt">${esc(claudePrompt(slug, rec))}</pre>
+      <div class="row">
+        <button class="primary" onclick='reportSendClaude(${js(slug)})'${dis}>Send to Claude</button>
+        <button onclick='reportCopyPrompt(${js(slug)})'${dis}>Copy prompt only</button>
+      </div>
+      <p class="small muted rmsg" id="rp_c_msg"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Word report via Grokbot</h3>
+      <p class="small muted">A Handoff packet in the inbox naming convention. Save it into
+        <code>Grokbot/Handoff/inbox/</code>; the desk works it inbox to outbox. It carries paths
+        and record state, never numbers.</p>
+      <p class="small"><code>${esc(pk.name)}</code></p>
+      <pre class="prompt" id="rp_g_txt">${esc(pk.text)}</pre>
+      <div class="row">
+        <button class="primary" onclick='reportSavePacket(${js(slug)})'${dis}>Save packet</button>
+        <button onclick='reportCopyPacket(${js(slug)})'${dis}>Copy packet</button>
+      </div>
+      <p class="small muted rmsg" id="rp_g_msg"></p>
+    </div>
+  </div>`;
 }
 
 /* ---------- trends -------------------------------------------------------- */
