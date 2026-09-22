@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCRA Packages</title>
+<style>
+:root{
+  --bg:#f6f7f8; --panel:#fff; --ink:#16191d; --muted:#61696f; --line:#dfe3e7;
+  --accent:#1f5f8b; --accent-soft:#e8f0f6;
+  --measured:#146b3c; --measured-bg:#e4f3ea;
+  --placeholder:#8a5a00; --placeholder-bg:#fdf2dc;
+  --derived:#3a4a7a; --derived-bg:#eaeefa;
+  --stated:#4a4f55; --stated-bg:#eef0f2;
+  --missing:#9a2222; --missing-bg:#fbeaea;
+  --warn:#9a2222; --warn-bg:#fbeaea;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme: dark){
+    --bg:#15181b; --panel:#1d2126; --ink:#e8eaec; --muted:#98a1a9; --line:#2f353c;
+    --accent:#6fb1dc; --accent-soft:#1c2a35;
+    --measured:#6cd39a; --measured-bg:#14301f;
+    --placeholder:#e8b25e; --placeholder-bg:#33260f;
+    --derived:#9db0ea; --derived-bg:#1b2238;
+    --stated:#aab2ba; --stated-bg:#252a30;
+    --missing:#ef8d8d; --missing-bg:#33191a;
+    --warn:#ef8d8d; --warn-bg:#33191a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181b; --panel:#1d2126; --ink:#e8eaec; --muted:#98a1a9; --line:#2f353c;
+  --accent:#6fb1dc; --accent-soft:#1c2a35;
+  --measured:#6cd39a; --measured-bg:#14301f;
+  --placeholder:#e8b25e; --placeholder-bg:#33260f;
+  --derived:#9db0ea; --derived-bg:#1b2238;
+  --stated:#aab2ba; --stated-bg:#252a30;
+  --missing:#ef8d8d; --missing-bg:#33191a;
+  --warn:#ef8d8d; --warn-bg:#33191a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.5 ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header{background:var(--panel);border-bottom:1px solid var(--line);
+  padding:14px 16px;position:sticky;top:0;z-index:5}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.hdr{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+h1{font-size:18px;margin:0;letter-spacing:.2px}
+h2{font-size:16px;margin:26px 0 10px}
+h3{font-size:14px;margin:18px 0 8px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.6px}
+nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:6px;padding:5px 11px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-current="true"]{background:var(--accent-soft);border-color:var(--accent);
+  color:var(--accent);font-weight:600}
+.ro{background:var(--accent-soft);border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:6px;padding:9px 12px;margin:14px 0;font-size:13px;color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:9px;
+  padding:14px 16px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;
+  letter-spacing:.5px;white-space:nowrap}
+tbody tr:hover{background:var(--accent-soft)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;
+  padding:1px 6px;border-radius:4px;border:1px solid;white-space:nowrap}
+.c-measured{color:var(--measured);background:var(--measured-bg);border-color:var(--measured)}
+.c-placeholder{color:var(--placeholder);background:var(--placeholder-bg);
+  border-color:var(--placeholder);border-style:dashed}
+.c-derived{color:var(--derived);background:var(--derived-bg);border-color:var(--derived)}
+.c-stated{color:var(--stated);background:var(--stated-bg);border-color:var(--stated)}
+.c-sourcedoc{color:var(--stated);background:var(--stated-bg);border-color:var(--stated)}
+.c-missing{color:var(--missing);background:var(--missing-bg);border-color:var(--missing)}
+.absent{color:var(--muted);font-style:italic}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0}
+.banner{border-radius:8px;padding:10px 13px;margin:12px 0;font-size:13.5px;
+  background:var(--warn-bg);border:1px solid var(--warn);color:var(--warn)}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pill{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);
+  background:var(--bg);color:var(--muted)}
+input[type=search],select{font:inherit;padding:5px 9px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel);color:var(--ink)}
+.bar{height:9px;background:var(--line);border-radius:5px;overflow:hidden;
+  display:flex;min-width:120px}
+.bar i{display:block;height:100%}
+details{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:8px 0;
+  background:var(--panel)}
+summary{cursor:pointer;font-weight:600;font-size:13.5px}
+.sysgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.dpline{position:relative;height:30px;margin:6px 0 2px}
+.dpline .track{position:absolute;top:13px;left:0;right:0;height:4px;
+  background:var(--line);border-radius:2px}
+.dpline .band{position:absolute;top:9px;height:12px;background:var(--accent-soft);
+  border-left:1px solid var(--accent);border-right:1px solid var(--accent)}
+.dpline .span{position:absolute;top:12px;height:6px;background:var(--accent);border-radius:3px}
+.dpline .tick{position:absolute;top:2px;font-size:10px;color:var(--muted)}
+svg text{fill:var(--muted);font-size:10px}
+footer{padding:26px 16px 40px;color:var(--muted);font-size:12.5px}
+@media (max-width:640px){ .hdr{gap:8px} nav{width:100%} h1{font-size:16px} }
+</style>
+</head>
+<body>
+<header><div class="wrap hdr">
+  <h1>SCRA Packages</h1>
+  <span class="pill" id="genstamp"></span>
+  <nav>
+    <button data-view="list" aria-current="true">Projects</button>
+    <button data-view="trends">Trends</button>
+    <button data-view="about">Provenance</button>
+    <button data-view="settings">Settings</button>
+  </nav>
+</div></header>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap">
+  Read only. The record is the source of truth and this page is a lens over it.
+  Deleting the viewer loses nothing. This page holds no project data of its own:
+  it reads the local <code>packages.js</code> bundle, or a private repository with
+  a read-only token this device holds.
+</footer>
+
+<script>
+// ───────────────────────── QR code ─────────────────────────
+// QR Code Generator for JavaScript, (c) 2009 Kazuhiko Arase, MIT licence (d-project.com).
+// Vendored and minified so a teammate can point a camera at a screen instead of typing a token,
+// and so it still works with no network.
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1})},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(o*r,n*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(){var t=n("友");if(2!=t.length||38726!=(t[0]<<8|t[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}(function(){return qrcode});
+// Render to a canvas (quiet zone included), sized for a phone camera.
+function qrCanvas(text, px=6){
+  const q = qrcode(0, 'L'); q.addData(text); q.make();
+  const n = q.getModuleCount(), quiet = 4, side = (n + quiet*2) * px;
+  const c = document.createElement('canvas'); c.width = c.height = side;
+  const x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, side, side);
+  x.fillStyle = '#000';
+  for (let r = 0; r < n; r++) for (let col = 0; col < n; col++) if (q.isDark(r, col)) x.fillRect((col+quiet)*px, (r+quiet)*px, px, px);
+  c.style.width = '100%'; c.style.maxWidth = '320px'; c.style.imageRendering = 'pixelated'; c.style.borderRadius = '8px'; c.style.display = 'block'; c.style.margin = '0 auto';
+  return c;
+}
+
+</script>
+<script>
+"use strict";
+
+/* ---------------------------------------------------------------------------
+   Two sources, one viewer.
+
+   Local:   packages.js sits beside this file in the OneDrive folder and the
+            page reads it directly. Nothing else is needed and nothing leaves
+            the machine.
+   Hosted:  this file is served from GitHub Pages, which is public, so it
+            carries no project data at all. The records live in a private
+            repository and the device holds a read-only token for it. The token
+            arrives once by setup link or QR code and stays in this browser.
+
+   The token is scoped to Contents: Read on the data repository and nothing
+   else, so a device that has it can read the records and cannot change them.
+   Treat the setup link like a password anyway.
+--------------------------------------------------------------------------- */
+
+const LS_CFG = "eb_scra_cfg_v1";
+const LS_CACHE = "eb_scra_cache_v1";
+
+let DATA = null;
+let SOURCE = "none";     // local | github | cache | none
+let LOADERR = null;
+
+const b64url = {
+  enc: s => btoa(unescape(encodeURIComponent(s)))
+              .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""),
+  dec: s => decodeURIComponent(escape(atob(s.replace(/-/g,"+").replace(/_/g,"/"))))
+};
+
+function loadCfg(){
+  try { return JSON.parse(localStorage.getItem(LS_CFG) || "null") || {}; }
+  catch { return {}; }
+}
+function saveCfg(c){
+  try { localStorage.setItem(LS_CFG, JSON.stringify(c)); return true; }
+  catch { return false; }
+}
+let CFG = loadCfg();
+
+function readCache(){
+  try { return JSON.parse(localStorage.getItem(LS_CACHE) || "null"); }
+  catch { return null; }
+}
+function writeCache(d){
+  // Best effort. A record set too big for this browser's quota is not an error
+  // worth stopping for; the next open just fetches again.
+  try { localStorage.setItem(LS_CACHE, JSON.stringify(d)); }
+  catch { try { localStorage.removeItem(LS_CACHE); } catch {} }
+}
+
+async function ghRaw(cfg, path){
+  const url = "https://api.github.com/repos/" + encodeURIComponent(cfg.owner)
+    + "/" + encodeURIComponent(cfg.repo) + "/contents/" + path
+    + "?ref=" + encodeURIComponent(cfg.branch || "main");
+  const r = await fetch(url, {headers: {
+    "Authorization": "Bearer " + cfg.token,
+    "Accept": "application/vnd.github.raw",
+    "X-GitHub-Api-Version": "2022-11-28"
+  }});
+  if (r.status === 404) return null;
+  if (r.status === 401 || r.status === 403)
+    throw new Error("GitHub refused the token (HTTP " + r.status + "). It needs "
+      + "Contents: Read on " + cfg.owner + "/" + cfg.repo + ", and it may have expired.");
+  if (!r.ok) throw new Error("GitHub returned HTTP " + r.status + " for " + path);
+  return JSON.parse(await r.text());
+}
+
+async function fetchFromGitHub(cfg){
+  const index = await ghRaw(cfg, "index.json");
+  if (!index) throw new Error("No index.json in " + cfg.owner + "/" + cfg.repo
+    + ". Publish the packages first with scra_publish.py.");
+  const records = {};
+  // Sequential on purpose. A handful of projects, and GitHub rate limits a burst
+  // of parallel reads from one token more readily than it does a short series.
+  for (const p of (index.packages || [])){
+    const rec = await ghRaw(cfg, p.slug + "/project.json");
+    if (rec) records[p.slug] = rec;
+  }
+  return {index, records, fetchedAt: new Date().toISOString()};
+}
+
+/* The folder copy sits beside packages.js; the hosted copy does not have one.
+   A device holding a token is the hosted case by definition, so the bundle is
+   not requested there at all and no 404 is logged. file:// and https:// have
+   separate localStorage, so a folder copy never sees a hosted device's token. */
+function loadBundle(){
+  if (window.SCRA_DATA) return Promise.resolve(true);
+  if (CFG.owner && CFG.repo && CFG.token) return Promise.resolve(false);
+  return new Promise(res => {
+    const s = document.createElement("script");
+    s.src = "packages.js";
+    s.onload = () => res(!!window.SCRA_DATA);
+    s.onerror = () => res(false);
+    document.head.appendChild(s);
+  });
+}
+
+async function boot(){
+  if (await loadBundle()){
+    DATA = window.SCRA_DATA; SOURCE = "local"; render(); return;
+  }
+  const cached = readCache();
+  if (cached){ DATA = cached; SOURCE = "cache"; render(); }
+  if (!(CFG.owner && CFG.repo && CFG.token)){ render(); return; }
+  try {
+    const d = await fetchFromGitHub(CFG);
+    DATA = d; SOURCE = "github"; LOADERR = null; writeCache(d);
+  } catch (e){
+    LOADERR = e.message;
+  }
+  render();
+}
+
+/* ---------- setup by link or QR, the SC Inspect flow ---------------------- */
+
+function setupCode(){
+  return b64url.enc(JSON.stringify({o: CFG.owner, r: CFG.repo, t: CFG.token}));
+}
+function setupLink(){
+  return location.origin + location.pathname + "#s=" + setupCode();
+}
+function parseSetup(t){
+  let s = (t || "").trim();
+  const at = s.indexOf("#s=");
+  if (at >= 0) s = s.slice(at + 3);
+  s = s.split(/[\s&]/)[0];
+  if (!s) throw new Error("That is empty.");
+  let o;
+  try { o = JSON.parse(b64url.dec(s)); }
+  catch { throw new Error("That does not look like a setup link. Copy the whole "
+    + "link, including the part after the #."); }
+  if (!o || !o.o || !o.r || !o.t) throw new Error("That setup link is incomplete.");
+  return o;
+}
+function setupFromHash(){
+  const h = location.hash || "";
+  if (h.indexOf("#s=") !== 0) return false;
+  let o; try { o = parseSetup(h); } catch { return false; }
+  history.replaceState(null, "", location.pathname + location.search); // token out of the address bar
+  if (confirm("Set up this device to read " + o.o + "/" + o.r + "?\n\n"
+      + "This installs a read-only access token for the SCRA records. Only "
+      + "accept it if you asked for it.")){
+    CFG = {owner: o.o, repo: o.r, token: o.t, branch: CFG.branch || "main"};
+    saveCfg(CFG);
+    location.hash = "list";
+    boot();
+  }
+  return true;
+}
+
+async function testConnection(cfg){
+  const idx = await fetchFromGitHub(cfg);
+  return idx.index.count + " package(s) readable in " + cfg.owner + "/" + cfg.repo;
+}
+const ABSENT = '<span class="absent">not recorded</span>';
+const $ = (s,r) => (r||document).querySelector(s);
+const main = document.getElementById("main");
+
+/* ---------- value helpers. A missing value is named, never blanked. -------- */
+function val(v){ return (v && typeof v === "object" && !Array.isArray(v)) ? v.value : v; }
+function num(v){
+  const x = val(v);
+  if (x === null || x === undefined || x === "") return null;
+  const n = Number(String(x).replace(/,/g,""));
+  return Number.isFinite(n) ? n : null;
+}
+function chipOf(v){
+  if (!v || typeof v !== "object") return (v===null||v===undefined||v==="") ? "missing" : "stated";
+  if (v.value === null || v.value === undefined || v.value === "") return "missing";
+  const s = v.source;
+  if (v.placeholder || s === "trendline") return "placeholder";
+  if (s === "contamx" && v.measured) return "measured";
+  if (typeof s === "string" && s.startsWith("derived")) return "derived";
+  if (["elss","drawing","mep","handbook","prior-report"].includes(s)) return "sourcedoc";
+  return "stated";
+}
+const CHIPLABEL = {measured:"Measured",placeholder:"Placeholder",derived:"Derived",
+  stated:"Stated",sourcedoc:"Source doc",missing:"Missing"};
+function chipHtml(kind){
+  return `<span class="chip c-${kind}">${CHIPLABEL[kind]}</span>`;
+}
+function esc(s){
+  return String(s===null||s===undefined?"":s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function text(v){
+  const x = val(v);
+  return (x===null||x===undefined||x==="") ? ABSENT : esc(x);
+}
+function cfm(v){
+  const n = num(v);
+  return n === null ? ABSENT : n.toLocaleString("en-US",{maximumFractionDigits:0});
+}
+function cfmChip(v){
+  const n = num(v);
+  if (n === null) return ABSENT + " " + chipHtml("missing");
+  return `${n.toLocaleString("en-US",{maximumFractionDigits:0})} ${chipHtml(chipOf(v))}`;
+}
+function systemsOf(rec){
+  const out = [];
+  (rec.stairs||[]).forEach(s => out.push({cls:"stair", s}));
+  (rec.elevators||[]).forEach(s => out.push({cls:"elevator", s}));
+  (rec.other_systems||[]).forEach(s => out.push({cls:"other", s}));
+  return out;
+}
+function minDpFor(rec, cls, s){
+  const c = rec.criteria || {};
+  if (cls === "stair") return num(s.vestibule && s.vestibule_pressurized
+    ? c.MinimumPressure_vest : c.MinimumPressure_novest);
+  if (cls === "elevator") return num(c.MinimumPressure_novest);
+  return null;
+}
+function bandFor(rec, cls){
+  const c = rec.criteria || {};
+  if (cls === "stair") return [num(c.stair_band_min), num(c.stair_band_max)];
+  if (cls === "elevator") return [num(c.elev_band_min), num(c.elev_band_max)];
+  return [null,null];
+}
+function openConflicts(rec){
+  return ((rec._meta||{}).conflicts||[]).filter(c => c.status !== "resolved");
+}
+
+/* ---------- door force: Handbook Eq. 9.3, report time post process --------- */
+function doorLeaf(rec){
+  const c = rec.criteria || {}, d = c.door_defaults || {};
+  return { W:+(d.leaf_W_ft ?? 3.0), A:+(d.leaf_A_sf ?? 21.0), d:+(d.leaf_d_ft ?? 0.25),
+           Fdc:+(d.Fdc_lbf ?? 9.0), basis:d.Fdc_basis || "documented assumption",
+           limit:+(c.door_force_limit_lbf ?? 30) };
+}
+function initiateForce(dp, L){ return L.Fdc + 5.2*dp*L.W*L.A/(2*(L.W-L.d)); }
+
+/* ---------- routing ------------------------------------------------------- */
+function route(){
+  const h = location.hash.replace(/^#/,"");
+  const [view, slug, sub] = h.split("/");
+  return { view: view || "list", slug, sub };
+}
+window.addEventListener("hashchange", () => {
+  if (setupFromHash()) return;
+  render();
+});
+document.querySelectorAll("nav button").forEach(b => {
+  b.addEventListener("click", () => { location.hash = b.dataset.view; });
+});
+
+/* ---------- views --------------------------------------------------------- */
+function viewList(){
+  const pkgs = DATA.index.packages;
+  const rows = pkgs.map(p => {
+    const c = p.conflicts, cov = p.coverage || {};
+    const track = p.building_status
+      ? `<span class="pill">${esc(p.building_status === "new" ? "New" : "Existing")}</span>`
+      : `<span class="chip c-missing">Missing</span>`;
+    const meas = p.measured
+      ? chipHtml("measured")
+      : (cov.placeholder ? chipHtml("placeholder") : chipHtml("missing"));
+    const blocking = c.open_blocking
+      ? ` <span class="chip c-missing">${c.open_blocking} blocking</span>` : "";
+    return `<tr>
+      <td><a href="#project/${esc(p.slug)}"><strong>${esc(p.name||p.slug)}</strong></a>
+          <div class="small muted">${esc(p.location||"")}</div></td>
+      <td>${track}</td>
+      <td>${p.stories ? esc(p.stories) : ABSENT}</td>
+      <td class="small">${p.counts.stairs} stair, ${p.counts.elevators_pressurized} bank,
+          ${p.counts.other} other</td>
+      <td>${meas}</td>
+      <td>${c.open}${blocking}<div class="small muted">${c.resolved} resolved</div></td>
+      <td>${p.seal.sealed ? "sealed" : '<span class="muted">not sealed</span>'}
+          ${(p.lint && p.lint.ran && p.lint.errors)
+            ? `<div><span class="chip c-missing">${p.lint.errors} lint error</span></div>` : ""}</td>
+      <td class="small">${esc(p.lastWriteBy||"")}<div class="muted">${esc(p.lastWriteAt||"")}</div></td>
+    </tr>`;
+  }).join("");
+
+  return `
+  <div class="ro"><strong>Read only.</strong> This page never writes to a package.
+    Resolving an open item happens in the record, through the lane that owns it.
+    A viewer that could write would be a second place the truth lives.</div>
+  <div class="row" style="margin:14px 0">
+    <input type="search" id="q" placeholder="Filter projects" style="flex:1;min-width:180px">
+    <select id="ftrack"><option value="">Any track</option>
+      <option value="new">New</option><option value="existing">Existing</option></select>
+    <select id="fmeas"><option value="">Any sizing</option>
+      <option value="1">Measured</option><option value="0">No measured sizing</option></select>
+    <label class="small muted"><input type="checkbox" id="fblock"> Blocking items only</label>
+  </div>
+  <div class="card scroll"><table id="ptable">
+    <thead><tr><th>Project</th><th>Track</th><th>Stories</th><th>Systems</th>
+      <th>Sizing</th><th>Open items</th><th>Seal</th><th>Last write</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="8" class="absent">No packages indexed.</td></tr>'}</tbody>
+  </table></div>`;
+}
+
+function wireList(){
+  const q = $("#q"), ft = $("#ftrack"), fm = $("#fmeas"), fb = $("#fblock");
+  if (!q) return;
+  const pkgs = DATA.index.packages;
+  function apply(){
+    const term = q.value.toLowerCase();
+    document.querySelectorAll("#ptable tbody tr").forEach((tr,i) => {
+      const p = pkgs[i]; if (!p) return;
+      let ok = true;
+      if (term) ok = ((p.name||"")+" "+(p.location||"")+" "+p.slug).toLowerCase().includes(term);
+      if (ok && ft.value) ok = p.building_status === ft.value;
+      if (ok && fm.value) ok = String(p.measured ? 1 : 0) === fm.value;
+      if (ok && fb.checked) ok = p.conflicts.open_blocking > 0;
+      tr.style.display = ok ? "" : "none";
+    });
+  }
+  [q,ft,fm,fb].forEach(el => el.addEventListener("input", apply));
+}
+
+function viewProject(slug, sub){
+  const rec = DATA.records[slug];
+  if (!rec) return `<div class="banner">No package named ${esc(slug)} in this index.</div>`;
+  const info = rec.info||{}, bld = rec.building||{}, meta = rec._meta||{}, seal = rec.seal||{};
+  const open = openConflicts(rec), blocking = open.filter(c => c.blocking);
+  const tabs = ["overview","systems","cases","conflicts","files"];
+  const cur = tabs.includes(sub) ? sub : "overview";
+  const nav = tabs.map(t =>
+    `<button data-tab="${t}" aria-current="${t===cur}"
+       onclick="location.hash='project/${esc(slug)}/${t}'">${t[0].toUpperCase()+t.slice(1)}</button>`
+  ).join("");
+
+  const head = `
+    <div class="row" style="margin:14px 0 4px">
+      <a href="#list" class="small">&larr; All projects</a>
+    </div>
+    <h2 style="margin-top:4px">${text(info.ProjectName)}</h2>
+    <div class="row small muted">
+      <span>${esc([info.ProjectStreet, info.ProjectLocation, info.ProjectZip]
+        .filter(Boolean).join(", "))}</span>
+      <span class="pill">AHJ ${esc(info.AHJ||"not recorded")}</span>
+      <span class="pill">${bld.building_status
+        ? esc(bld.building_status==="new"?"New construction":"Existing building")
+        : "track MISSING"}</span>
+      <span class="pill">${seal.sealed ? "sealed "+esc(seal.by||"") : "not sealed"}</span>
+      <span class="pill">last write ${esc(meta.lastWriteBy||"?")} ${esc(meta.lastWriteAt||"")}</span>
+    </div>
+    ${lintBanner(slug)}
+    ${blocking.length ? `<div class="banner"><strong>${blocking.length} open item${
+      blocking.length>1?"s":""} block${blocking.length>1?"":"s"} the seal.</strong>
+      ${blocking.map(c=>esc(c.id+" "+c.item)).join("; ")}</div>` : ""}
+    <div class="row" style="margin:14px 0 2px">${nav}</div>`;
+
+  const body = {overview:tabOverview, systems:tabSystems, cases:tabCases,
+                conflicts:tabConflicts, files:tabFiles}[cur](rec);
+  return head + body;
+}
+
+function lintBanner(slug){
+  const p = DATA.index.packages.find(x => x.slug === slug) || {};
+  const lt = p.lint;
+  if (!lt) return "";
+  if (!lt.ran) return `<p class="small muted">Lint not run: ${esc(lt.reason||"")}.</p>`;
+  const f = lt.findings || [];
+  if (!f.length) return `<p class="small muted">scra_lint clean at index time.</p>`;
+  const errs = f.filter(x => x.level === "ERROR");
+  const body = f.map(x =>
+    `<div class="small"><strong>${esc(x.level)}</strong> ${esc(x.code)}
+     <span class="muted">${esc(x.where)}</span></div>`).join("");
+  return errs.length
+    ? `<div class="banner"><strong>${errs.length} lint error${errs.length>1?"s":""}.</strong>
+       A record that does not satisfy its own rules should not be projected into a
+       report until it does.${body}</div>`
+    : `<details><summary>${f.length} lint finding${f.length>1?"s":""}, no errors</summary>
+       ${body}<p class="small muted">Run <code>scra_lint.py</code> against the record
+       for the full text. The index carries the codes only.</p></details>`;
+}
+
+function tabOverview(rec){
+  const bld = rec.building||{}, cl = rec.climate||{}, cr = rec.criteria||{},
+        sc = rec.smoke_control||{}, mdl = (rec.contam||{}).model||{},
+        run = (rec.contam||{}).run||{}, ex = sc.exhaust||{}, rel = sc.relief||{};
+  const lib = mdl.airflow_path_library||{};
+  const lvl = (bld.levels||[]);
+  return `
+  <div class="grid">
+    <div class="card"><h3>Building</h3><dl class="kv">
+      <dt>Stories</dt><dd>${text(bld.NumberofStories)}</dd>
+      <dt>Construction</dt><dd>${text(bld.ConstructionDate)}</dd>
+      <dt>Levels on record</dt><dd>${lvl.length || ABSENT}</dd>
+      <dt>Prior report</dt><dd>${text((rec.info||{}).prior_report)}</dd>
+    </dl></div>
+    <div class="card"><h3>Climate</h3><dl class="kv">
+      <dt>Airport</dt><dd>${text(cl.NearestAirport)}</dd>
+      <dt>Summer</dt><dd>${text(cl.SummerTemp)} F outdoor, ${text(cl.SummerStairTemp)} F shaft</dd>
+      <dt>Winter</dt><dd>${text(cl.WinterTemp)} F outdoor, ${text(cl.WinterStairTemp)} F shaft</dd>
+      <dt>Wind</dt><dd>${text(cl.WindSpeed)} mph</dd>
+      <dt>Interior</dt><dd>${text(cl.InteriorTemp)} F</dd>
+      <dt>Source</dt><dd>${text(cl.climate_source)}</dd>
+    </dl><p class="small muted" style="margin:8px 0 0">These are inputs to the model
+      as well as outputs to the report.</p></div>
+    <div class="card"><h3>Criteria</h3><dl class="kv">
+      <dt>Minimum, no vestibule</dt><dd>${text(cr.MinimumPressure_novest)} in. w.g.</dd>
+      <dt>Minimum, vestibule</dt><dd>${text(cr.MinimumPressure_vest)} in. w.g.</dd>
+      <dt>Design target</dt><dd>${text(cr.design_target_min)} to ${text(cr.design_target_max)}</dd>
+      <dt>Stair band</dt><dd>${text(cr.stair_band_min)} to ${text(cr.stair_band_max)}</dd>
+      <dt>Elevator band</dt><dd>${text(cr.elev_band_min)} to ${text(cr.elev_band_max)}</dd>
+      <dt>Door force limit</dt><dd>${text(cr.door_force_limit_lbf)} lbf initiate</dd>
+      <dt>Equation</dt><dd>${text(cr.door_force_equation)}</dd>
+      <dt>Score mode</dt><dd>${text(cr.score_mode)}</dd>
+    </dl></div>
+    <div class="card"><h3>Posture</h3><dl class="kv">
+      <dt>In scope</dt><dd>${(sc.systems_in_scope||[]).map(esc).join(", ") || ABSENT}</dd>
+      <dt>Exhaust strategy</dt><dd>${text(ex.strategy)}</dd>
+      <dt>Floors</dt><dd>${ex.strategy && ex.strategy!=="none"
+        ? `${esc(ex.floors_above)} above, ${esc(ex.floors_below)} below, fire floor ${
+            ex.fire_floor ? "yes":"no"}` : '<span class="muted">none</span>'}</dd>
+      <dt>AHJ variance</dt><dd class="small">${text(ex.ahj_variance)}</dd>
+      <dt>Relief</dt><dd>${cfmChip(rel.cfm)} ${esc(rel.kind||"")}</dd>
+    </dl></div>
+    <div class="card"><h3>Model</h3><dl class="kv">
+      <dt>.prj</dt><dd>${text(mdl.prj)}</dd>
+      <dt>ContamX</dt><dd>${text(mdl.contamx_version)}</dd>
+      <dt>Run id</dt><dd>${text(run.run_id)}</dd>
+      <dt>Stamp</dt><dd>${text(run.stamp)}</dd>
+      <dt>Procedure</dt><dd>${text(run.procedure)}</dd>
+      <dt>Results source</dt><dd>${text(run.results_source)}</dd>
+      <dt>Score filter</dt><dd>${text(run.score_filter)}</dd>
+      <dt>Library</dt><dd class="small">${text(lib.source_path)}</dd>
+    </dl><p class="small muted" style="margin:8px 0 0">A CFM only means something
+      against the library it was solved on, so the library belongs on this page.</p></div>
+  </div>`;
+}
+
+function tabSystems(rec){
+  const bal = ((rec.contam||{}).balance)||{};
+  const cards = systemsOf(rec).map(({cls,s}) => {
+    const b = bal[s.id]||{}, inj = s.injection||{};
+    const [blo,bhi] = bandFor(rec, cls), floor = minDpFor(rec, cls, s);
+    const dmin = b.dp_min_achieved, dmax = b.dp_max_achieved;
+    let band;
+    if (b.band_min_cfm === undefined || b.band_min_cfm === null) band = ABSENT;
+    else if (b.band_min_cfm === b.band_max_cfm)
+      band = `${b.band_min_cfm.toLocaleString()} <span class="muted">converged, band not probed</span>`;
+    else band = `${b.band_min_cfm.toLocaleString()} to ${b.band_max_cfm.toLocaleString()}`;
+    const spread = b.spread_ratio;
+    const spreadNote = (spread !== undefined && spread !== null && spread > 1.8)
+      ? ` <span class="chip c-missing">wide</span>` : "";
+    return `<div class="card">
+      <div class="row"><strong>${esc(s.label||s.id)}</strong>
+        <span class="pill">${cls}</span>
+        ${cls==="elevator" ? `<span class="pill">${esc(s.basis||"basis not recorded")}</span>`:""}
+        ${cls==="stair" ? `<span class="pill">${s.vestibule_pressurized
+          ? "vestibule, pressurized" : s.vestibule ? "vestibule" : "no vestibule"}</span>`:""}
+        <span class="pill">${s.levels_served_count != null
+          ? esc(s.levels_served_count)+" levels, to "+esc(s.levels||"?")
+          : "levels served "+esc(s.levels||"not recorded")}</span>
+      </div>
+      <dl class="kv" style="margin-top:10px">
+        <dt>Design</dt><dd>${cfmChip(s.design)} cfm</dd>
+        <dt>Max</dt><dd>${cfmChip(s.max)} cfm <span class="small muted">${
+          esc((s.max||{}).source||"")}</span></dd>
+        ${Object.keys(b).length ? `
+        <dt>Setpoint</dt><dd>${b.setpoint_cfm !== undefined && b.setpoint_cfm !== null
+          ? b.setpoint_cfm.toLocaleString()+" cfm" : ABSENT}</dd>
+        <dt>Band</dt><dd>${band}</dd>
+        <dt>Search</dt><dd>${text(b.search)}${b.iterations!==undefined
+          ? ` <span class="small muted">${b.iterations} iterations</span>`:""}</dd>
+        <dt>Seed</dt><dd>${cfmChip(b.seed)} cfm</dd>
+        <dt>Spread ratio</dt><dd>${spread !== undefined && spread !== null
+          ? spread.toFixed(3)+spreadNote : ABSENT}</dd>
+        <dt>Tier</dt><dd>${text(b.tier)}</dd>
+        <dt>Buffers spent</dt><dd>${(b.buffers_spent||[]).join(", ") || "none"}</dd>`
+        : `<dt>Balance</dt><dd class="absent">no balance block on this system</dd>`}
+        <dt>Injection</dt><dd>${text(inj)}<div class="small muted">${
+          (inj.points||[]).map(p=>esc(`${p.tag||"?"} at level ${p.level||"?"}`)).join("; ")
+          || ""}</div></dd>
+      </dl>
+      ${dpLine(dmin, dmax, floor, blo, bhi)}
+      ${s.notes ? `<p class="small muted">${esc(s.notes)}</p>`:""}
+    </div>`;
+  }).join("");
+  const anySpread = Object.values(bal).some(b => b.spread_ratio > 1.8);
+  return `<p class="small muted">Lists of one to ten. Four stairs and one stair render
+    the same way, because the record has no fixed slots.</p>
+    ${anySpread ? `<div class="banner">A spread ratio beyond roughly 1.8 to 2.3 means no
+      single setpoint fits every case. The remedy is injection architecture, not more air.</div>`:""}
+    <div class="sysgrid">${cards || '<div class="card absent">No systems on this record.</div>'}</div>`;
+}
+
+function dpLine(dmin, dmax, floor, blo, bhi){
+  if (dmin === undefined || dmin === null || dmax === undefined || dmax === null)
+    return `<p class="small absent">No achieved pressure range recorded.</p>`;
+  const lo = 0, hi = Math.max(bhi||0, dmax, 0.4) * 1.08;
+  const pc = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
+  const bandEl = (blo!=null && bhi!=null)
+    ? `<div class="band" style="left:${pc(blo)};width:${((bhi-blo)/(hi-lo)*100).toFixed(2)}%"></div>` : "";
+  const floorEl = floor!=null
+    ? `<div class="tick" style="left:${pc(floor)}">${floor} min</div>` : "";
+  return `<div class="dpline">
+      <div class="track"></div>${bandEl}
+      <div class="span" style="left:${pc(dmin)};width:${((dmax-dmin)/(hi-lo)*100).toFixed(2)}%"></div>
+      ${floorEl}
+    </div>
+    <div class="small muted">achieved ${dmin.toFixed(3)} to ${dmax.toFixed(3)} in. w.g.${
+      (blo!=null&&bhi!=null) ? `, sizer band ${blo} to ${bhi}`:""}${
+      floor!=null ? `, compliance floor ${floor}`:""}</div>`;
+}
+
+function tabCases(rec){
+  const contam = rec.contam||{}, cases = contam.cases||[], bal = contam.balance||{};
+  const L = doorLeaf(rec);
+  if (!cases.length){
+    const rows = Object.entries(bal).map(([sid,b]) => {
+      const dp = b.dp_max_achieved;
+      const F = (dp!=null) ? initiateForce(dp, L) : null;
+      return `<tr><td>${esc(sid)}</td>
+        <td>${b.setpoint_cfm!=null ? b.setpoint_cfm.toLocaleString() : ABSENT}</td>
+        <td>${(b.cases_passed||[]).join(", ") || ABSENT}</td>
+        <td>${b.dp_min_achieved!=null ? b.dp_min_achieved.toFixed(3) : ABSENT}</td>
+        <td>${dp!=null ? dp.toFixed(3) : ABSENT}</td>
+        <td>${F!=null ? F.toFixed(1)+" lbf" : ABSENT}</td>
+        <td>${F!=null ? (F>L.limit ? '<span class="chip c-missing">above</span>' : "within") : ABSENT}</td>
+      </tr>`;
+    }).join("");
+    const common = Object.values(bal).filter(b => (b.cases_passed||[]).length > 1
+      && b.band_min_cfm === b.band_max_cfm).length;
+    return `<div class="banner">No case matrix recorded on this package. The balance
+      block carries the setpoint, the achieved range and the case ids that passed;
+      the per case detail is not in the record yet.</div>
+      ${common ? `<p class="small"><span class="chip c-measured">Common setpoint</span>
+        ${common} system${common===1?"":"s"} pass every recorded case at one CFM.
+        One setpoint by construction, not a winner picked across cases.</p>` : ""}
+      <div class="card scroll"><table>
+        <thead><tr><th>System</th><th>Setpoint</th><th>Cases passed</th><th>dP min</th>
+        <th>dP max</th><th>Initiate force</th><th>vs ${L.limit} lbf</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="7" class="absent">No balance block either.</td></tr>'}</tbody>
+      </table></div>
+      <p class="small muted">Force computed at the maximum achieved pressure by Handbook
+        Eq. 9.3, leaf W ${L.W} ft, A ${L.A} sf, d ${L.d} ft, Fdc ${L.Fdc} lbf
+        (${esc(L.basis)}). Report time only: door force never enters the CFM search.</p>`;
+  }
+  const bySys = {};
+  cases.forEach(c => Object.entries(c.results||{}).forEach(([sid,r]) => {
+    (bySys[sid] = bySys[sid] || []).push({c,r});
+  }));
+  return Object.entries(bySys).map(([sid, items]) => {
+    const setpoints = new Set(items.map(x => x.r.ahs_cfm));
+    const same = setpoints.size === 1 && items.length > 1;
+    const rows = items.map(({c,r}) => {
+      const dmin = r.dp_min||{}, dmax = r.dp_max||{};
+      return `<tr>
+        <td>${esc(c.case_id)}</td><td>${esc(c.season||"")}</td>
+        <td>${esc(c.outdoor_f ?? "")} / ${esc(c.shaft_f ?? "")}</td>
+        <td>${esc(c.wind_mph ?? "")}</td>
+        <td>${r.ahs_cfm!=null ? r.ahs_cfm.toLocaleString() : ABSENT}</td>
+        <td>${dmin.value!=null ? dmin.value.toFixed(3)+" @ "+esc(dmin.floor) : ABSENT}</td>
+        <td>${dmax.value!=null ? dmax.value.toFixed(3)+" @ "+esc(dmax.floor) : ABSENT}</td>
+        <td>${r.pass_min_dp===true?"pass":r.pass_min_dp===false?
+          '<span class="chip c-missing">fail</span>':ABSENT}</td>
+        <td>${(r.flags||[]).join(", ")||"none"}</td></tr>`;
+    }).join("");
+    const profiles = items.filter(x => x.r.dp_by_floor).map(({c,r}) =>
+      `<details><summary>${esc(c.case_id)} per floor profile</summary>
+        ${profileSvg(r.dp_by_floor, rec)}</details>`).join("");
+    return `<h3>${esc(sid)}</h3>
+      ${same ? `<p class="small"><span class="chip c-measured">Common setpoint</span>
+        ${[...setpoints][0].toLocaleString()} cfm across ${items.length} cases.
+        One setpoint by construction, not a winner picked across cases.</p>`:""}
+      <div class="card scroll"><table>
+        <thead><tr><th>Case</th><th>Season</th><th>Outdoor / shaft F</th><th>Wind</th>
+        <th>AHS cfm</th><th>dP min</th><th>dP max</th><th>Passes min</th><th>Flags</th></tr></thead>
+        <tbody>${rows}</tbody></table></div>${profiles}`;
+  }).join("");
+}
+
+function profileSvg(prof, rec){
+  const entries = Object.entries(prof)
+    .map(([f,v]) => [f, Number(v)]).filter(([,v]) => Number.isFinite(v))
+    .sort((a,b) => (parseInt(a[0])||0) - (parseInt(b[0])||0));
+  if (!entries.length) return `<p class="absent">No per floor values.</p>`;
+  const W = 820, H = 30 + entries.length * 18, L = 46;
+  const cr = rec.criteria||{};
+  const blo = num(cr.stair_band_min), bhi = num(cr.stair_band_max);
+  // The band guides are part of the domain, so a profile that sits entirely
+  // inside the band still shows where the band edges are.
+  const max = Math.max(...entries.map(e => e[1]), bhi || 0) * 1.15 || 1;
+  const x = v => L + (v / max) * (W - L - 70);
+  const bars = entries.map((e,i) => {
+    const y = 20 + i*18;
+    const over = bhi!=null && e[1] > bhi, under = blo!=null && e[1] < blo;
+    const col = over || under ? "var(--missing)" : "var(--accent)";
+    return `<text x="0" y="${y+9}">L${esc(e[0])}</text>
+      <rect x="${L}" y="${y}" width="${(x(e[1])-L).toFixed(1)}" height="11" rx="2" fill="${col}"/>
+      <text x="${(x(e[1])+5).toFixed(1)}" y="${y+9}">${e[1].toFixed(3)}</text>`;
+  }).join("");
+  const guide = (v,label) => v==null ? "" :
+    `<line x1="${x(v)}" y1="14" x2="${x(v)}" y2="${H-6}" stroke="var(--line)"
+      stroke-dasharray="3 3"/><text x="${x(v)+2}" y="12">${label}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
+    aria-label="Per floor pressure profile">${guide(blo,blo)}${guide(bhi,bhi)}${bars}</svg>`;
+}
+
+function tabConflicts(rec){
+  const cs = ((rec._meta||{}).conflicts||[]).slice()
+    .sort((a,b) => (a.status==="resolved") - (b.status==="resolved")
+      || String(a.id).localeCompare(String(b.id)));
+  if (!cs.length) return `<div class="card absent">No open or resolved items recorded.</div>`;
+  const rows = cs.map(c => `<tr>
+    <td><strong>${esc(c.id)}</strong><div class="small muted">${esc(c.category||"")}</div></td>
+    <td>${esc(c.item)}<div class="small muted">${esc(c.known||"")}</div></td>
+    <td class="small">${esc(c.action||"")}</td>
+    <td>${esc(c.priority||"")}</td>
+    <td>${c.blocking ? '<span class="chip c-missing">blocking</span>' : ""}</td>
+    <td>${c.status==="resolved"
+      ? `resolved<div class="small muted">${esc(c.resolvedBy||"")} ${esc(c.resolvedAt||"")}</div>
+         <div class="small">${esc(c.resolution||"")}</div>`
+      : `<span class="chip c-missing">${esc(c.status||"open")}</span>`}</td>
+  </tr>`).join("");
+  return `<p class="small muted">Resolved rows stay. The record of how a disagreement
+    was settled is worth as much as the settlement. There is no button to close one
+    here, because closing happens in the record through the lane that owns it.</p>
+    <div class="card scroll"><table>
+      <thead><tr><th>Id</th><th>Item</th><th>Action</th><th>Priority</th>
+      <th></th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function tabFiles(rec){
+  const files = rec.files||[];
+  if (!files.length) return `<div class="card absent">No files indexed on this record.</div>`;
+  return `<p class="small muted">The viewer reads the index, never the folder. An
+    unindexed file is invisible by design.</p>
+    <div class="card scroll"><table>
+      <thead><tr><th>Name</th><th>Kind</th><th>Added by</th><th>Added</th></tr></thead>
+      <tbody>${files.map(f => `<tr><td>${esc(f.name||f.id)}</td><td>${esc(f.kind||"")}</td>
+        <td>${esc(f.addedBy||"")}</td><td>${esc(f.addedAt||"")}</td></tr>`).join("")}
+      </tbody></table></div>`;
+}
+
+/* ---------- trends -------------------------------------------------------- */
+function trendPoints(){
+  const pts = [];
+  Object.entries(DATA.records).forEach(([slug, rec]) => {
+    const bal = ((rec.contam||{}).balance)||{};
+    systemsOf(rec).forEach(({cls,s}) => {
+      const d = num(s.design);
+      if (d === null) return;
+      const b = bal[s.id]||{};
+      pts.push({
+        slug, project:(rec.info||{}).ProjectName||slug,
+        cls, label:s.label||s.id,
+        design:d,
+        levels:Number(s.levels_served_count) || null,
+        stories:Number((rec.building||{}).NumberofStories) || null,
+        track:(rec.building||{}).building_status || null,
+        vestibule: cls==="stair" ? !!s.vestibule : null,
+        arch:(s.injection||{}).architecture || null,
+        chip: chipOf(s.design),
+        spread: b.spread_ratio ?? null,
+        dpmax: b.dp_max_achieved ?? null,
+        climate:(rec.climate||{}).NearestAirport || null,
+      });
+    });
+  });
+  return pts;
+}
+
+function scatter(pts, xk, yk, xlabel, ylabel){
+  const usable = pts.filter(p => p[xk] != null && p[yk] != null);
+  if (usable.length < 1)
+    return `<div class="card"><h3>${esc(ylabel)} against ${esc(xlabel)}</h3>
+      <p class="absent">Nothing plottable yet. A point is drawn only where both values
+      are on a record. Nothing is estimated into a chart.</p></div>`;
+  const W=560,H=240,P=42;
+  const xs = usable.map(p=>p[xk]), ys = usable.map(p=>p[yk]);
+  const x0=Math.min(...xs), x1=Math.max(...xs), y0=0, y1=Math.max(...ys);
+  const sx = v => P + (x1===x0 ? .5 : (v-x0)/(x1-x0)) * (W-P-18);
+  const sy = v => H-P - (y1===y0 ? .5 : (v-y0)/(y1-y0)) * (H-P-18);
+  const marks = usable.map(p => {
+    const cx=sx(p[xk]).toFixed(1), cy=sy(p[yk]).toFixed(1);
+    const fill = p.chip==="measured" ? "var(--measured)"
+      : p.chip==="placeholder" ? "none" : "var(--stated)";
+    const stroke = p.chip==="placeholder" ? "var(--placeholder)" : "none";
+    const shape = p.cls==="stair"
+      ? `<circle cx="${cx}" cy="${cy}" r="5" fill="${fill}" stroke="${stroke}"
+           stroke-width="2" stroke-dasharray="2 2"/>`
+      : `<rect x="${cx-5}" y="${cy-5}" width="10" height="10" fill="${fill}"
+           stroke="${stroke}" stroke-width="2" stroke-dasharray="2 2"/>`;
+    return `<g><title>${esc(p.project)} ${esc(p.label)}: ${xlabel} ${p[xk]}, ${ylabel} ${p[yk]}</title>${shape}</g>`;
+  }).join("");
+  return `<div class="card"><h3>${esc(ylabel)} against ${esc(xlabel)}</h3>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img"
+      aria-label="${esc(ylabel)} against ${esc(xlabel)}">
+      <line x1="${P}" y1="${H-P}" x2="${W-10}" y2="${H-P}" stroke="var(--line)"/>
+      <line x1="${P}" y1="14" x2="${P}" y2="${H-P}" stroke="var(--line)"/>
+      <text x="${P}" y="${H-P+16}">${x0}</text>
+      <text x="${W-40}" y="${H-P+16}">${x1}</text>
+      <text x="4" y="${H-P}">${y0}</text>
+      <text x="4" y="22">${typeof y1==="number"?y1.toLocaleString():y1}</text>
+      ${marks}
+    </svg>
+    <p class="small muted">Circle stair, square bank. Filled measured, dashed outline
+      placeholder. ${usable.length} of ${pts.length} points carry both values.${
+      x1===x0 ? " Every point shares the same "+esc(xlabel)+", so the horizontal axis says nothing yet." : ""}</p></div>`;
+}
+
+function viewTrends(){
+  const pts = trendPoints();
+  const n = Object.keys(DATA.records).length;
+  const measured = pts.filter(p => p.chip === "measured").length;
+  const placeholder = pts.filter(p => p.chip === "placeholder").length;
+  const tracks = {};
+  pts.forEach(p => { tracks[p.track||"missing"] = (tracks[p.track||"missing"]||0)+1; });
+  const vest = pts.filter(p => p.cls==="stair" && p.dpmax!=null);
+  const vestRows = vest.length ? vest.map(p => `<tr><td>${esc(p.project)} ${esc(p.label)}</td>
+      <td>${p.vestibule?"yes":"no"}</td><td>${p.dpmax.toFixed(3)}</td></tr>`).join("")
+    : `<tr><td colspan="3" class="absent">No achieved pressures recorded yet.</td></tr>`;
+  const archRows = pts.filter(p=>p.arch).map(p =>
+    `<tr><td>${esc(p.project)} ${esc(p.label)}</td><td>${esc(p.arch)}</td>
+     <td>${p.stories ?? "?"}</td><td>${p.levels ?? "?"}</td></tr>`).join("")
+    || `<tr><td colspan="4" class="absent">No injection architecture recorded.</td></tr>`;
+
+  return `
+  <div class="ro">Every point carries its provenance and nothing is estimated into a
+    chart. A system with no recorded design CFM is left out of a trend rather than
+    filled in. With one measured package these charts are a scaffold, not a finding.</div>
+
+  <div class="grid">
+    <div class="card"><h3>Portfolio coverage</h3>
+      <p><strong>${n}</strong> package${n===1?"":"s"}, <strong>${pts.length}</strong>
+        sized system${pts.length===1?"":"s"}.</p>
+      <div class="bar" style="margin:8px 0">
+        <i style="width:${pts.length?measured/pts.length*100:0}%;background:var(--measured)"></i>
+        <i style="width:${pts.length?placeholder/pts.length*100:0}%;background:var(--placeholder)"></i>
+      </div>
+      <p class="small">${measured} measured, ${placeholder} placeholder,
+        ${pts.length-measured-placeholder} other. How much of the portfolio is running
+        on seeds rather than on results.</p>
+      <p class="small muted">Systems by track: ${Object.entries(tracks)
+        .map(([k,v])=>`${v} ${k}`).join(", ")}.</p>
+    </div>
+    ${scatter(pts,"levels","design","levels served","design cfm")}
+    ${scatter(pts,"stories","spread","stories","spread ratio")}
+  </div>
+
+  <h3>Vestibule against achieved pressure</h3>
+  <div class="card scroll"><table>
+    <thead><tr><th>System</th><th>Vestibule</th><th>dP max achieved</th></tr></thead>
+    <tbody>${vestRows}</tbody></table></div>
+
+  <h3>Injection architecture against height</h3>
+  <div class="card scroll"><table>
+    <thead><tr><th>System</th><th>Architecture</th><th>Stories</th><th>Levels served</th></tr></thead>
+    <tbody>${archRows}</tbody></table></div>
+  <p class="small muted">The orientation brief's heuristic is single roof to roughly
+    20 stories, top and bottom to 33, multi point above. This table is what says
+    whether that holds once there are enough measured packages to look at.</p>`;
+}
+
+function viewAbout(){
+  return `
+  <h2>Provenance</h2>
+  <p>The one failure this viewer exists to prevent is an unverified number reading as
+    a result. Measured and Placeholder are distinguishable by shape and by weight, not
+    only by color.</p>
+  <div class="card"><table>
+    <thead><tr><th>Chip</th><th>Meaning</th></tr></thead><tbody>
+    <tr><td>${chipHtml("measured")}</td><td>A ContamX result, carrying a stamp and a run id.</td></tr>
+    <tr><td>${chipHtml("derived")}</td><td>Computed from a measured value by a locked rule,
+      such as max at design times 1.30, rounded half up to 250.</td></tr>
+    <tr><td>${chipHtml("placeholder")}</td><td>A trendline seed. Not a result, and never
+      to be read as one.</td></tr>
+    <tr><td>${chipHtml("stated")}</td><td>Supplied by the project team, or by program convention.</td></tr>
+    <tr><td>${chipHtml("sourcedoc")}</td><td>Read from the ELSS, a drawing, an MEP set,
+      the Handbook or a prior report.</td></tr>
+    <tr><td>${chipHtml("missing")}</td><td>No value on the record. Named rather than left
+      blank, because a blank reads as zero.</td></tr>
+  </tbody></table></div>
+  <h3>What this page does not do</h3>
+  <p class="small">No editing. No run orchestration. No .prj access. No sealing. No filling
+    a missing cell to complete a view. Door force is computed at report time by Handbook
+    Eq. 9.3 and never enters the CFM search.</p>
+  <h3>Index</h3>
+  <p class="small muted">Generated ${esc(DATA.index.generated)} by
+    ${esc(DATA.index.generator)} from ${esc(DATA.index.root)}.
+    index.json is a cache; rescanning rebuilds it.</p>`;
+}
+
+function viewSettings(){
+  const c = CFG || {};
+  const localMode = SOURCE === "local";
+  return `
+  <h2>Settings</h2>
+  ${localMode ? `<div class="ro"><strong>Reading the local bundle.</strong> This copy
+    is open from a folder with <code>packages.js</code> beside it, so it needs no
+    token and no network. The settings below apply to the hosted copy at
+    GitHub Pages.</div>` : ""}
+
+  <div class="card">
+    <h3>Where the records come from</h3>
+    <p class="small muted">This page is public. The records are not. They live in a
+      private repository and this device reads them with its own token. The token
+      never leaves this browser and it cannot write.</p>
+    <dl class="kv" style="margin-top:10px">
+      <dt>Owner</dt><dd><input id="cf_owner" style="width:100%" value="${esc(c.owner||"wfletcher13")}"></dd>
+      <dt>Repository</dt><dd><input id="cf_repo" style="width:100%" value="${esc(c.repo||"eb-scra-data")}"></dd>
+      <dt>Branch</dt><dd><input id="cf_branch" style="width:100%" value="${esc(c.branch||"main")}"></dd>
+      <dt>Access token</dt><dd><input id="cf_token" type="password" style="width:100%"
+        placeholder="${c.token ? "saved on this device" : "github_pat_..."}"></dd>
+    </dl>
+    <div class="row" style="margin-top:12px">
+      <button id="cf_test">Test connection</button>
+      <button id="cf_save">Save</button>
+      <button id="cf_forget">Forget this device</button>
+      <span id="cf_msg" class="small muted"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Set up another device</h3>
+    <p class="small muted">Scan this with a phone or tablet camera, or send the link.
+      It carries a real credential, so send it the way you would send a password,
+      and never post it anywhere public.</p>
+    ${(c.owner && c.repo && c.token)
+      ? `<div id="qrbox" style="margin:12px 0"></div>
+         <div class="row"><button id="cf_copy">Copy setup link</button>
+         <button id="cf_paste">Paste a setup link</button></div>`
+      : `<p class="absent">Save a working token first, then a setup code appears here.</p>
+         <div class="row"><button id="cf_paste">Paste a setup link</button></div>`}
+  </div>
+
+  <div class="card">
+    <h3>Status</h3>
+    <dl class="kv">
+      <dt>Source</dt><dd>${({local:"local packages.js bundle",
+        github:"private repository, fetched just now", cache:"last fetch, held on this device",
+        none:"nothing loaded"})[SOURCE]}</dd>
+      <dt>Packages</dt><dd>${DATA ? DATA.index.count : 0}</dd>
+      <dt>Index built</dt><dd>${DATA ? esc(DATA.index.generated) : ABSENT}</dd>
+      <dt>Fetched</dt><dd>${DATA && DATA.fetchedAt ? esc(DATA.fetchedAt) : "n/a"}</dd>
+      ${LOADERR ? `<dt>Last error</dt><dd class="chip c-missing">${esc(LOADERR)}</dd>` : ""}
+    </dl>
+    <div class="row" style="margin-top:10px"><button id="cf_refresh">Refresh now</button></div>
+  </div>`;
+}
+
+function wireSettings(){
+  const msg = $("#cf_msg");
+  const gather = () => ({
+    owner: ($("#cf_owner").value || "").trim(),
+    repo: ($("#cf_repo").value || "").trim(),
+    branch: ($("#cf_branch").value || "main").trim(),
+    token: ($("#cf_token").value || "").trim() || CFG.token || ""
+  });
+  const say = (t, bad) => { if (msg){ msg.textContent = t;
+    msg.className = "small " + (bad ? "chip c-missing" : "muted"); } };
+
+  const test = $("#cf_test");
+  if (test) test.onclick = async () => {
+    const c = gather();
+    if (!(c.owner && c.repo && c.token)) return say("Owner, repository and token are all needed.", true);
+    say("Checking...");
+    try { say(await testConnection(c)); }
+    catch (e){ say(e.message, true); }
+  };
+  const save = $("#cf_save");
+  if (save) save.onclick = async () => {
+    const c = gather();
+    if (!(c.owner && c.repo && c.token)) return say("Owner, repository and token are all needed.", true);
+    CFG = c;
+    say(saveCfg(CFG) ? "Saved on this device. Loading..." : "Could not save to this browser.", false);
+    await boot();
+  };
+  const forget = $("#cf_forget");
+  if (forget) forget.onclick = () => {
+    if (!confirm("Remove the token and the cached records from this device?")) return;
+    try { localStorage.removeItem(LS_CFG); localStorage.removeItem(LS_CACHE); } catch {}
+    CFG = {}; DATA = window.SCRA_DATA || null; SOURCE = DATA ? "local" : "none";
+    render();
+  };
+  const refresh = $("#cf_refresh");
+  if (refresh) refresh.onclick = () => boot();
+  const copy = $("#cf_copy");
+  if (copy) copy.onclick = () => {
+    navigator.clipboard.writeText(setupLink())
+      .then(() => say("Setup link copied. Send it like a password."))
+      .catch(() => say("Copy failed. Use the QR code instead.", true));
+  };
+  const paste = $("#cf_paste");
+  if (paste) paste.onclick = () => {
+    const t = prompt("Paste the setup link");
+    if (!t) return;
+    try {
+      const o = parseSetup(t);
+      CFG = {owner: o.o, repo: o.r, token: o.t, branch: "main"};
+      saveCfg(CFG); boot();
+    } catch (e){ say(e.message, true); }
+  };
+  const box = $("#qrbox");
+  if (box && typeof qrCanvas === "function"){
+    try { box.appendChild(qrCanvas(setupLink(), 5)); }
+    catch { box.innerHTML = '<p class="absent">Setup link is too long for a QR code. Use Copy setup link.</p>'; }
+  }
+}
+
+/* ---------- render -------------------------------------------------------- */
+function render(){
+  const {view, slug, sub} = route();
+  document.querySelectorAll("nav button").forEach(b =>
+    b.setAttribute("aria-current", String(b.dataset.view === (view==="project"?"list":view))));
+  document.getElementById("genstamp").textContent = DATA
+    ? `${DATA.index.count} package${DATA.index.count===1?"":"s"}`
+      + (SOURCE === "cache" ? ", held on this device" : "")
+    : "not set up";
+
+  if (view === "settings"){ main.innerHTML = viewSettings(); wireSettings();
+    window.scrollTo(0,0); return; }
+
+  if (!DATA){
+    const configured = !!(CFG.owner && CFG.repo && CFG.token);
+    main.innerHTML = `<div class="banner"><strong>No records loaded.</strong>
+      ${LOADERR ? esc(LOADERR) : configured
+        ? "The token is saved but nothing came back yet."
+        : "This device has not been set up. Open Settings and paste the setup link, "
+          + "or scan the QR code from a device that is already working."}</div>
+      <p class="small muted">Opened from the OneDrive folder instead, this page reads
+        <code>packages.js</code> beside it and needs no token at all.</p>
+      <div class="row"><button onclick="location.hash='settings'">Open Settings</button></div>`;
+    window.scrollTo(0,0); return;
+  }
+
+  if (view === "project" && slug) main.innerHTML = viewProject(slug, sub);
+  else if (view === "trends") main.innerHTML = viewTrends();
+  else if (view === "about") main.innerHTML = viewAbout();
+  else { main.innerHTML = viewList(); wireList(); }
+  window.scrollTo(0,0);
+}
+
+if (!setupFromHash()) boot();
+</script>
+</body>
+</html>
