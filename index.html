@@ -17,6 +17,10 @@
   --warn:#a32626; --warn-bg:#fbe9e9;
   --shadow:0 1px 2px rgba(15,46,34,.05),0 4px 14px rgba(15,46,34,.06);
   --radius:10px;
+  /* status: fixed, never themed; always shipped with a glyph and a label */
+  --st-good:#0ca30c; --st-warn:#fab219; --st-serious:#ec835a; --st-crit:#d03b3b;
+  /* approach series: categorical slots 1 to 3, validated all-pairs (scatter) */
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s-none:#8a948f;
 }
 :root:not([data-theme="light"]){
   @media (prefers-color-scheme: dark){
@@ -30,9 +34,11 @@
     --missing:#ef8d8d; --missing-bg:#33191a;
     --warn:#ef8d8d; --warn-bg:#33191a;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.35);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-none:#7d8a83;
   }
 }
 :root[data-theme="dark"]{
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-none:#7d8a83;
   --bg:#0e1512; --panel:#161f1a; --panel-2:#131a16; --ink:#e6ede8; --muted:#9db2a6; --line:#3a4a41; --line-strong:#526357;
   --accent:#5fc785; --accent-2:#8fdcaa; --accent-soft:#173226; --accent-strong:#9fe6b8;
   --sidebar:#0a1a13; --sidebar-ink:#dce9e0; --sidebar-muted:#7f9a8a; --sidebar-active:#1f4a30;
@@ -60,18 +66,18 @@ h1{font-size:16px;margin:0;letter-spacing:.2px;display:none}
 h2{font-size:22px;margin:0 0 4px;font-weight:800;color:var(--ink)}
 h3{font-size:13px;margin:0 0 10px;color:var(--muted);
   text-transform:uppercase;letter-spacing:.6px;font-weight:700}
-.app{display:flex;max-width:1440px;margin:0 auto;align-items:flex-start}
-aside{width:208px;flex:0 0 208px;background:var(--sidebar);min-height:calc(100vh - 58px);
-  padding:20px 12px;position:sticky;top:58px;align-self:flex-start;
+.app{display:flex;max-width:1440px;margin:0 auto;align-items:stretch;min-height:calc(100vh - 61px)}
+aside{width:212px;flex:0 0 212px;background:var(--sidebar);
+  padding:22px 14px;align-self:stretch;
   box-shadow:2px 0 8px rgba(15,46,34,.12);border-right:1px solid var(--sidebar-active)}
-nav{display:flex;flex-direction:column;gap:2px}
+nav{display:flex;flex-direction:column;gap:2px;position:sticky;top:84px}
 aside button{font:inherit;color:var(--sidebar-ink);background:transparent;border:1px solid transparent;
   border-radius:7px;padding:9px 11px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:9px;width:100%}
 aside button svg{flex:0 0 16px;opacity:.85}
 aside button:hover{background:rgba(255,255,255,.06)}
 aside button[aria-current="true"]{background:var(--sidebar-active);color:#fff;font-weight:700}
 aside button[aria-current="true"] svg{opacity:1}
-main{flex:1 1 auto;min-width:0;padding:26px 32px 60px}
+main,main.wrap{flex:1 1 auto;min-width:0;max-width:none;margin:0;padding:34px 56px 72px 56px}
 .wrap{max-width:1180px;margin:0 auto;padding:0}
 .ro{background:var(--accent-soft);border:1px solid var(--line);border-left:3px solid var(--accent);
   border-radius:var(--radius);padding:10px 13px;margin:14px 0;font-size:13px;color:var(--muted)}
@@ -97,9 +103,9 @@ tbody tr:last-child td{border-bottom:none}
 .c-sourcedoc{color:var(--stated);background:var(--stated-bg);border-color:var(--stated)}
 .c-missing{color:var(--missing);background:var(--missing-bg);border-color:var(--missing)}
 .absent{color:var(--muted);font-style:italic}
-.kv{display:grid;grid-template-columns:minmax(120px,auto) 1fr;gap:0 16px;font-size:13.5px}
+.kv{display:grid;grid-template-columns:minmax(96px,38%) minmax(0,1fr);gap:0 16px;font-size:13.5px}
 .kv dt{color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line)}
-.kv dd{margin:0;padding:8px 0;border-bottom:1px solid var(--line)}
+.kv dd{margin:0;padding:8px 0;border-bottom:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
 .kv dt:last-of-type,.kv dd:last-of-type{border-bottom:none}
 .banner{border-radius:var(--radius);padding:10px 13px;margin:12px 0;font-size:13.5px;
   background:var(--warn-bg);border:1px solid var(--warn);color:var(--warn)}
@@ -154,12 +160,46 @@ footer{padding:26px 24px 40px;color:var(--muted);font-size:12.5px;max-width:1440
 .stattile svg{flex:0 0 22px;opacity:.7}
 .sysicon{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .sysicon svg{flex:0 0 40px;height:40px;background:var(--accent-soft);border-radius:8px;padding:5px}
+@media (max-width:1180px){ main,main.wrap{padding:28px 36px 64px} }
 @media (max-width:900px){
-  aside{position:static;width:auto;flex:none;min-height:0;display:flex;overflow-x:auto}
-  nav{flex-direction:row}
-  .app{flex-direction:column}
-  main{padding:16px}
+  aside{width:auto;flex:none;display:flex;overflow-x:auto;padding:10px 12px}
+  nav{flex-direction:row;position:static}
+  .app{flex-direction:column;min-height:0}
+  main,main.wrap{padding:20px 16px}
 }
+/* ---- pressure status and approach series --------------------------------- */
+.st-good{--c:var(--st-good)} .st-warn{--c:var(--st-warn)}
+.st-serious{--c:var(--st-serious)} .st-crit{--c:var(--st-crit)} .st-none{--c:var(--line-strong)}
+.dp{display:inline-flex;align-items:center;gap:6px;padding:2px 8px 2px 6px;border-radius:6px;
+  border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 15%,var(--panel));
+  font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.dp .g{font-size:10px;line-height:1;color:var(--c);filter:brightness(.8)}
+.legend{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .sw{width:12px;height:12px;border-radius:3px;background:var(--c);flex:0 0 12px}
+.legend .stsw{width:16px;height:16px;border-radius:4px;flex:0 0 16px;display:inline-flex;
+  align-items:center;justify-content:center;font-size:9px;color:var(--ink);
+  background:color-mix(in srgb,var(--c) 30%,var(--panel));border-left:3px solid var(--c)}
+.legend .ln{width:18px;height:0;border-top:2px dashed var(--c);flex:0 0 18px}
+.heatwrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+table.heat{border:none;border-collapse:separate;border-spacing:3px;width:100%;font-size:12.5px}
+table.heat th,table.heat td{border:none;padding:4px 6px;text-align:center;background:none}
+table.heat tbody tr:nth-child(even),table.heat tbody tr:hover{background:none}
+table.heat th{font-size:11px;white-space:nowrap}
+table.heat td.lvl{text-align:right;color:var(--muted);font-weight:600;width:48px}
+table.heat td.cell{border-radius:5px;background:color-mix(in srgb,var(--c) 30%,var(--panel));
+  border-left:3px solid var(--c);font-variant-numeric:tabular-nums;color:var(--ink)}
+table.heat td.cell.ext{border-left-style:dashed}
+table.heat td.nil{color:var(--muted);background:var(--panel-2);border-radius:5px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+main .seg button{border:none;border-radius:0;border-right:1px solid var(--line);padding:6px 12px;background:var(--panel)}
+main .seg button:last-child{border-right:none}
+main .seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-2);font-weight:700}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--panel);color:var(--ink);
+  border:1px solid var(--line-strong);border-radius:8px;padding:7px 10px;font-size:12.5px;
+  box-shadow:var(--shadow);max-width:280px;display:none;line-height:1.4}
+.chartcard svg text{font-size:12px}
+.chartcard .axis{stroke:var(--line-strong)} .chartcard .grid{stroke:var(--line);stroke-dasharray:2 3}
 @media (max-width:640px){ .hdr{gap:8px} h2{font-size:19px} }
 </style>
 </head>
@@ -492,7 +532,9 @@ function systemsOf(rec){
 }
 function minDpFor(rec, cls, s){
   const c = rec.criteria || {};
-  if (cls === "stair") return num(s.vestibule && s.vestibule_pressurized
+  // Locked 2026-09-22: a provided vestibule is the whole test for the 0.05 floor.
+  // vestibule_pressurized only says a vestibule fan exists; it does not move the floor.
+  if (cls === "stair") return num(s.vestibule
     ? c.MinimumPressure_vest : c.MinimumPressure_novest);
   if (cls === "elevator") return num(c.MinimumPressure_novest);
   return null;
@@ -515,6 +557,211 @@ function doorLeaf(rec){
            limit:+(c.door_force_limit_lbf ?? 30) };
 }
 function initiateForce(dp, L){ return L.Fdc + 5.2*dp*L.W*L.A/(2*(L.W-L.d)); }
+
+
+/* ---------- pressure status: one classifier for every table and chart ------ */
+function forceLimitDp(L){ return (L.limit - L.Fdc) * 2 * (L.W - L.d) / (5.2 * L.W * L.A); }
+function dpCtx(rec, cls, s){
+  const [blo, bhi] = bandFor(rec, cls), floor = minDpFor(rec, cls, s);
+  const c = rec.criteria || {};
+  const ceil = cls === "elevator" ? num(c.elev_hard_ceiling) : forceLimitDp(doorLeaf(rec));
+  return {cls, floor, blo, bhi, ceil};
+}
+const DPST = {
+  critlo:{c:"st-crit",   g:"▼", t:"Below the compliance floor"},
+  low:   {c:"st-warn",   g:"▽", t:"Below the search band"},
+  good:  {c:"st-good",   g:"✓", t:"Inside the search band"},
+  spill: {c:"st-good",   g:"✓", t:"Spillover above the elevator band, under the hard ceiling"},
+  high:  {c:"st-serious",g:"△", t:"Above the search band, door force still under the limit"},
+  crithi:{c:"st-crit",   g:"▲", t:"Over the ceiling"}
+};
+function dpKind(dp, x){
+  if (dp === null || dp === undefined || !x) return null;
+  if (x.floor != null && dp < x.floor) return "critlo";
+  if (x.blo != null && dp < x.blo) return "low";
+  if (x.bhi == null || dp <= x.bhi) return "good";
+  if (x.ceil != null && dp > x.ceil) return "crithi";
+  return x.cls === "elevator" ? "spill" : "high";
+}
+function dpBadge(dp, x){
+  if (dp === null || dp === undefined) return ABSENT;
+  const k = dpKind(dp, x), s = DPST[k] || {c:"st-none", g:"", t:""};
+  const why = k === "crithi" && x.cls !== "elevator"
+    ? "Initiate force over the limit at this pressure" : s.t;
+  return `<span class="dp ${s.c}" title="${esc(why)}"><span class="g" aria-hidden="true">${s.g}</span>${dp.toFixed(3)}<span class="sr" style="position:absolute;left:-9999px">${esc(why)}</span></span>`;
+}
+function dpLegend(cls){
+  const keys = cls === "elevator" ? ["critlo","low","good","spill","crithi"]
+                                  : ["critlo","low","good","high","crithi"];
+  const names = {critlo:"Below floor", low:"Below band", good:"In band",
+    spill:"Spillover, OK", high:"Above band", crithi: cls==="elevator" ? "Over hard ceiling" : "Door force over limit"};
+  return `<div class="legend">${keys.map(k =>
+    `<span class="${DPST[k].c}"><span class="stsw">${DPST[k].g}</span>${names[k]}</span>`).join("")}</div>`;
+}
+/* Zoned pressure track: the colored zones are the criteria, the dark bar is
+   what the model achieved. Replaces the thin single-color line. */
+function dpZone(dmin, dmax, x, w){
+  if (dmin == null || dmax == null) return `<p class="small absent">No achieved pressure range recorded.</p>`;
+  w = w || 320;
+  const top = Math.max(dmax, (x.ceil||0), (x.bhi||0), 0.4) * 1.1;
+  const P = 6, sx = v => P + Math.max(0, v) / top * (w - 2*P);
+  const edges = [0, x.floor, x.blo, x.bhi, x.ceil, top].map(v => v == null ? null : v);
+  const zones = [["st-crit",0,x.floor],["st-warn",x.floor,x.blo],["st-good",x.blo,x.bhi],
+    [x.cls==="elevator"?"st-good":"st-serious",x.bhi,x.ceil],["st-crit",x.ceil,top]]
+    .filter(z => z[1] != null && z[2] != null && z[2] > z[1]);
+  const zr = zones.map(([c,a,b]) =>
+    `<rect class="${c}" x="${sx(a).toFixed(1)}" y="8" width="${(sx(b)-sx(a)).toFixed(1)}" height="12"
+      style="fill:color-mix(in srgb,var(--c) ${c==="st-good"?34:24}%,var(--panel))"/>`).join("");
+  const ticks = [x.floor, x.blo, x.bhi, x.ceil].filter(v => v != null);
+  let lastX = -99;
+  const tk = ticks.map(v => { const X = sx(v); const show = X - lastX > 24; if (show) lastX = X;
+    return `<line x1="${X.toFixed(1)}" y1="6" x2="${X.toFixed(1)}" y2="22" stroke="var(--line-strong)"/>`
+      + (show ? `<text x="${X.toFixed(1)}" y="34" text-anchor="middle">${(+v).toFixed(2)}</text>` : ""); }).join("");
+  const a = sx(dmin), b = sx(dmax);
+  const kmin = DPST[dpKind(dmin,x)] || {}, kmax = DPST[dpKind(dmax,x)] || {};
+  return `<svg viewBox="0 0 ${w} 38" width="100%" style="max-width:${w}px;display:block;margin:8px 0 2px" role="img"
+      aria-label="Achieved ${dmin.toFixed(3)} to ${dmax.toFixed(3)} in. w.g.">
+      <rect x="${P}" y="8" width="${w-2*P}" height="12" rx="3" fill="var(--panel-2)" stroke="var(--line)"/>
+      ${zr}${tk}
+      <rect x="${a.toFixed(1)}" y="12" width="${Math.max(2,b-a).toFixed(1)}" height="4" rx="2" fill="var(--ink)"/>
+      <circle class="${kmin.c||""}" cx="${a.toFixed(1)}" cy="14" r="4.5" fill="var(--c)" stroke="var(--panel)" stroke-width="2"/>
+      <circle class="${kmax.c||""}" cx="${b.toFixed(1)}" cy="14" r="4.5" fill="var(--c)" stroke="var(--panel)" stroke-width="2"/>
+    </svg>`;
+}
+function dpLine(dmin, dmax, floor, blo, bhi, x){
+  x = x || {cls:"stair", floor, blo, bhi, ceil:null};
+  if (dmin == null || dmax == null) return `<p class="small absent">No achieved pressure range recorded.</p>`;
+  return `${dpZone(dmin, dmax, x)}
+    <div class="small muted" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      achieved ${dpBadge(dmin,x)} to ${dpBadge(dmax,x)} in. w.g.
+      <span>band ${x.blo} to ${x.bhi}${x.floor!=null ? ", floor "+x.floor : ""}${
+        x.ceil!=null ? (x.cls==="elevator" ? ", hard ceiling " : ", 30 lbf at ")+(+x.ceil).toFixed(3) : ""}</span></div>`;
+}
+/* ---------- approach series for the trend charts -------------------------- */
+const APPROACH = {
+  arch:{ label:"Injection approach", key:p=>p.arch,
+    order:["single_roof","top_and_bottom","multi_point"],
+    name:{single_roof:"Single roof", top_and_bottom:"Top and bottom", multi_point:"Multi-point"}},
+  track:{ label:"Building track", key:p=>p.track,
+    order:["new","existing"], name:{new:"New construction", existing:"Existing building"}},
+  vest:{ label:"Vestibule", key:p=>p.cls!=="stair" ? null : (p.vestibule ? "yes" : "no"),
+    order:["no","yes"], name:{no:"No vestibule", yes:"Vestibule"}}
+};
+const SLOTVAR = ["--s1","--s2","--s3"];
+let TREND_GROUP = "arch";
+function groupOf(p, g){ const k = APPROACH[g].key(p); return APPROACH[g].order.includes(k) ? k : null; }
+function colorOf(k, g){ const i = APPROACH[g].order.indexOf(k); return i < 0 ? "var(--s-none)" : `var(${SLOTVAR[i]})`; }
+function fitLine(pts, xk, yk){
+  const q = pts.filter(p => p[xk] != null && p[yk] != null);
+  const xs = new Set(q.map(p => p[xk]));
+  if (q.length < 2 || xs.size < 2) return null;
+  const n = q.length, mx = q.reduce((s,p)=>s+p[xk],0)/n, my = q.reduce((s,p)=>s+p[yk],0)/n;
+  let sxy = 0, sxx = 0, syy = 0;
+  q.forEach(p => { sxy += (p[xk]-mx)*(p[yk]-my); sxx += (p[xk]-mx)**2; syy += (p[yk]-my)**2; });
+  const b = sxy / sxx, a = my - b*mx, r2 = syy ? (sxy*sxy)/(sxx*syy) : 1;
+  return {a, b, r2, n, x0:Math.min(...xs), x1:Math.max(...xs)};
+}
+function niceMax(v){ if (v <= 0) return 1; const e = Math.pow(10, Math.floor(Math.log10(v)));
+  for (const m of [1,1.5,2,2.5,3,4,5,6,8,10]) if (m*e >= v) return m*e; return 10*e; }
+function fmtN(v){ return Math.abs(v) >= 1000 ? Math.round(v).toLocaleString("en-US") : (+v).toLocaleString("en-US",{maximumFractionDigits:1}); }
+function trendChart(all, xk, yk, xlabel, ylabel, g, unitNote){
+  const pts = all.filter(p => p.cls === "stair" && p[xk] != null && p[yk] != null);
+  if (!pts.length) return `<div class="card chartcard"><h3>${esc(ylabel)} against ${esc(xlabel)}</h3>
+    <p class="absent">Nothing plottable yet.</p></div>`;
+  const W = 1000, H = 340, L = 64, R = 190, T = 16, B = 42;
+  const xmin = Math.min(...pts.map(p=>p[xk])), xmax = Math.max(...pts.map(p=>p[xk]));
+  const x0 = Math.max(0, Math.floor((xmin - (xmax-xmin)*0.05) / 5) * 5), x1 = Math.ceil((xmax + (xmax-xmin)*0.05 || xmax+1) / 5) * 5;
+  const y1 = niceMax(Math.max(...pts.map(p=>p[yk])) * 1.05);
+  const sx = v => L + (v - x0) / (x1 - x0 || 1) * (W - L - R);
+  const sy = v => H - B - v / y1 * (H - T - B);
+  const grid = [0, .25, .5, .75, 1].map(f => { const v = y1*f, Y = sy(v).toFixed(1);
+    return `<line class="grid" x1="${L}" y1="${Y}" x2="${W-R}" y2="${Y}"/>
+      <text x="${L-8}" y="${(+Y+3.5).toFixed(1)}" text-anchor="end">${fmtN(v)}</text>`; }).join("");
+  const xt = Array.from({length:6}, (_,i) => x0 + (x1-x0)*i/5).map(v =>
+    `<text x="${sx(v).toFixed(1)}" y="${H-B+16}" text-anchor="middle">${fmtN(v)}</text>`).join("");
+  const groups = APPROACH[g].order.map(k => ({k, pts: pts.filter(p => groupOf(p,g) === k)}));
+  const fits = groups.map(G => ({...G, fit: fitLine(G.pts.filter(p => p.chip === "measured"), xk, yk)}));
+  // Direct labels live in the right gutter, stacked so they never sit on a line;
+  // each carries a dashed key in its line color, so no leader implies extrapolation.
+  const fitted = fits.filter(G => G.fit).map(G => ({...G, ya: G.fit.a + G.fit.b*G.fit.x0, yb: G.fit.a + G.fit.b*G.fit.x1}))
+    .sort((p,q) => sy(p.yb) - sy(q.yb));
+  let prev = -1e9;
+  fitted.forEach(G => { G.ly = Math.max(sy(G.yb), prev + 34); prev = G.ly; });
+  const LX = W - R + 16;
+  const lines = fitted.map(G => {
+    const f = G.fit, c = colorOf(G.k, g);
+    const ex = sx(f.x1), ey = sy(G.yb);
+    return `<line x1="${sx(f.x0).toFixed(1)}" y1="${sy(G.ya).toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}"
+        stroke="${c}" stroke-width="2" stroke-dasharray="6 4" stroke-linecap="round"/>
+      <line x1="${LX}" y1="${(G.ly-4).toFixed(1)}" x2="${LX+16}" y2="${(G.ly-4).toFixed(1)}" stroke="${c}" stroke-width="2" stroke-dasharray="6 4"/>
+      <text x="${LX+22}" y="${(G.ly).toFixed(1)}" style="fill:var(--ink);font-weight:700">${esc(APPROACH[g].name[G.k])}</text>
+      <text x="${LX+22}" y="${(G.ly+14).toFixed(1)}">${f.b>=0?"+":""}${fmtN(f.b)} ${esc(unitNote)} · n ${f.n}</text>`;
+  }).join("");
+  const shapeFor = (k, cx, cy, fill, stroke) => {
+    const i = APPROACH[g].order.indexOf(k);
+    if (i === 1) return `<path d="M${cx},${cy-6} L${cx+6},${cy+5} L${cx-6},${cy+5}Z" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    if (i === 2) return `<path d="M${cx},${cy-6} L${cx+6},${cy} L${cx},${cy+6} L${cx-6},${cy}Z" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    return `<circle cx="${cx}" cy="${cy}" r="5" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+  };
+  const marks = pts.map(p => {
+    const k = groupOf(p, g), c = colorOf(k, g), cx = +sx(p[xk]).toFixed(1), cy = +sy(p[yk]).toFixed(1);
+    const hollow = p.chip !== "measured";
+    const tip = `<strong>${esc(p.project)}</strong><br>${esc(p.label)}<br>${esc(xlabel)} ${fmtN(p[xk])}, ${esc(ylabel)} ${fmtN(p[yk])}<br>${esc(k ? APPROACH[g].name[k] : "approach not recorded")} · ${esc(CHIPLABEL[p.chip]||p.chip)}`;
+    return `<g data-tip="${esc(tip)}"><circle cx="${cx}" cy="${cy}" r="11" fill="transparent"/>
+      ${shapeFor(k, cx, cy, hollow ? "var(--panel)" : c, hollow ? c : "var(--panel)")}</g>`;
+  }).join("");
+  const legend = `<div class="legend">${APPROACH[g].order.map(k => {
+      const G = fits.find(F => F.k === k), n = G.pts.length;
+      return `<span style="--c:${colorOf(k,g)}"><span class="sw"></span>${esc(APPROACH[g].name[k])} (${n})${
+        G.fit ? ` <span class="ln"></span>trend` : n ? ` <span class="muted">no trend, needs 2 measured at different ${esc(xlabel)}</span>` : ""}</span>`;
+    }).join("")}${pts.some(p => !groupOf(p,g)) ? `<span style="--c:var(--s-none)"><span class="sw"></span>not recorded</span>` : ""}
+    <span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/></svg>hollow: not measured, left out of the trend</span></div>`;
+  return `<div class="card chartcard"><h3>${esc(ylabel)} against ${esc(xlabel)}, by ${esc(APPROACH[g].label.toLowerCase())}</h3>
+    ${legend}
+    <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(ylabel)} against ${esc(xlabel)}">
+      ${grid}<line class="axis" x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}"/>${xt}
+      <text x="${(L + (W-L-R)/2).toFixed(0)}" y="${H-6}" text-anchor="middle">${esc(xlabel)}</text>
+      ${lines}${marks}
+    </svg>
+    <p class="small muted">Stairs only; a hoistway is a different regression. Each dashed line is a
+      least-squares fit through that approach's measured points only, drawn across the range it
+      covers and no further. It describes the portfolio; it is not a ContamX result and not a seed.</p></div>`;
+}
+function approachTable(all, g){
+  const pts = all.filter(p => p.cls === "stair");
+  const rows = APPROACH[g].order.map(k => {
+    const G = pts.filter(p => groupOf(p,g) === k), M = G.filter(p => p.chip === "measured");
+    const f1 = fitLine(M, "levels", "design"), f2 = fitLine(M, "stories", "perlevel");
+    const per = M.filter(p => p.perlevel != null).map(p => p.perlevel);
+    const projects = new Set(G.map(p => p.project)).size;
+    const mean = per.length ? per.reduce((a,b)=>a+b,0)/per.length : null;
+    return `<tr><td><span class="legend" style="margin:0"><span style="--c:${colorOf(k,g)}"><span class="sw"></span>${esc(APPROACH[g].name[k])}</span></span></td>
+      <td>${G.length} stairs, ${projects} project${projects===1?"":"s"}</td><td>${M.length}</td>
+      <td>${mean!=null ? fmtN(mean) : ABSENT}</td>
+      <td>${per.length ? fmtN(Math.min(...per))+" to "+fmtN(Math.max(...per)) : ABSENT}</td>
+      <td>${f1 ? (f1.b>=0?"+":"")+fmtN(f1.b)+" cfm per level" : '<span class="absent">needs 2 measured</span>'}</td>
+      <td>${f2 ? (f2.b>=0?"+":"")+fmtN(f2.b)+" per story" : '<span class="absent">needs 2 heights</span>'}</td></tr>`;
+  }).join("");
+  return `<div class="card scroll"><table>
+    <thead><tr><th>${esc(APPROACH[g].label)}</th><th>Systems</th><th>Measured</th><th>Mean cfm per level</th>
+    <th>Range cfm per level</th><th>Trend, design vs levels</th><th>Trend, cfm per level vs stories</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+function setTrendGroup(g){ TREND_GROUP = g; const y = window.scrollY; main.innerHTML = viewTrends(); window.scrollTo(0, y); }
+/* one tooltip for every chart mark carrying data-tip */
+(function(){
+  const tip = document.createElement("div"); tip.id = "tip"; document.body.appendChild(tip);
+  document.addEventListener("mousemove", e => {
+    const t = e.target.closest && e.target.closest("[data-tip]");
+    if (!t){ tip.style.display = "none"; return; }
+    tip.innerHTML = t.getAttribute("data-tip"); tip.style.display = "block";
+    const r = tip.getBoundingClientRect();
+    let x = e.clientX + 14, y = e.clientY + 14;
+    if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+    if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  });
+})();
 
 /* ---------- routing ------------------------------------------------------- */
 function route(){
@@ -768,7 +1015,7 @@ function tabSystems(rec){
           (inj.points||[]).map(p=>esc(`${p.tag||"?"} at level ${p.level||"?"}`)).join("; ")
           || ""}</div></dd>
       </dl>
-      ${dpLine(dmin, dmax, floor, blo, bhi)}
+      ${dpLine(dmin, dmax, floor, blo, bhi, dpCtx(rec, cls, s))}
       ${s.notes ? `<p class="small muted">${esc(s.notes)}</p>`:""}
     </div>`;
   }).join("");
@@ -780,65 +1027,57 @@ function tabSystems(rec){
     <div class="sysgrid">${cards || '<div class="card absent">No systems on this record.</div>'}</div>`;
 }
 
-function dpLine(dmin, dmax, floor, blo, bhi){
-  if (dmin === undefined || dmin === null || dmax === undefined || dmax === null)
-    return `<p class="small absent">No achieved pressure range recorded.</p>`;
-  const lo = 0, hi = Math.max(bhi||0, dmax, 0.4) * 1.08;
-  const pc = v => ((v - lo) / (hi - lo) * 100).toFixed(2) + "%";
-  const bandEl = (blo!=null && bhi!=null)
-    ? `<div class="band" style="left:${pc(blo)};width:${((bhi-blo)/(hi-lo)*100).toFixed(2)}%"></div>` : "";
-  const floorEl = floor!=null
-    ? `<div class="tick" style="left:${pc(floor)}">${floor} min</div>` : "";
-  return `<div class="dpline">
-      <div class="track"></div>${bandEl}
-      <div class="span" style="left:${pc(dmin)};width:${((dmax-dmin)/(hi-lo)*100).toFixed(2)}%"></div>
-      ${floorEl}
-    </div>
-    <div class="small muted">achieved ${dmin.toFixed(3)} to ${dmax.toFixed(3)} in. w.g.${
-      (blo!=null&&bhi!=null) ? `, sizer band ${blo} to ${bhi}`:""}${
-      floor!=null ? `, compliance floor ${floor}`:""}</div>`;
-}
-
 function tabCases(rec){
   const contam = rec.contam||{}, cases = contam.cases||[], bal = contam.balance||{};
   const L = doorLeaf(rec);
-  if (!cases.length){
-    const rows = Object.entries(bal).map(([sid,b]) => {
-      const dp = b.dp_max_achieved;
-      const F = (dp!=null) ? initiateForce(dp, L) : null;
-      return `<tr><td>${esc(sid)}</td>
-        <td>${b.setpoint_cfm!=null ? b.setpoint_cfm.toLocaleString() : ABSENT}</td>
-        <td>${(b.cases_passed||[]).join(", ") || ABSENT}</td>
-        <td>${b.dp_min_achieved!=null ? b.dp_min_achieved.toFixed(3) : ABSENT}</td>
-        <td>${dp!=null ? dp.toFixed(3) : ABSENT}</td>
-        <td>${F!=null ? F.toFixed(1)+" lbf" : ABSENT}</td>
-        <td>${F!=null ? (F>L.limit ? '<span class="chip c-missing">above</span>' : "within") : ABSENT}</td>
-      </tr>`;
-    }).join("");
-    const common = Object.values(bal).filter(b => (b.cases_passed||[]).length > 1
-      && b.band_min_cfm === b.band_max_cfm).length;
-    return `<div class="banner">No case matrix recorded on this package. The balance
-      block carries the setpoint, the achieved range and the case ids that passed;
-      the per case detail is not in the record yet.</div>
-      ${common ? `<p class="small"><span class="chip c-measured">Common setpoint</span>
-        ${common} system${common===1?"":"s"} pass every recorded case at one CFM.
-        One setpoint by construction, not a winner picked across cases.</p>` : ""}
-      <div class="card scroll"><table>
-        <thead><tr><th>System</th><th>Setpoint</th><th>Cases passed</th><th>dP min</th>
-        <th>dP max</th><th>Initiate force</th><th>vs ${L.limit} lbf</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="7" class="absent">No balance block either.</td></tr>'}</tbody>
-      </table></div>
-      <p class="small muted">Force computed at the maximum achieved pressure by Handbook
-        Eq. 9.3, leaf W ${L.W} ft, A ${L.A} sf, d ${L.d} ft, Fdc ${L.Fdc} lbf
-        (${esc(L.basis)}). Report time only: door force never enters the CFM search.</p>`;
-  }
+  const sysById = {}; systemsOf(rec).forEach(o => { sysById[o.s.id] = o; });
+  const ctxOf = sid => { const o = sysById[sid]; return o ? dpCtx(rec, o.cls, o.s) : dpCtx(rec, "stair", {}); };
+  const labelOf = sid => (sysById[sid] && sysById[sid].s.label) || sid;
+  const archOf = sid => ((sysById[sid]||{}).s||{}).injection ? sysById[sid].s.injection.architecture : null;
+  const caseLine = cases.length ? `<div class="row small" style="margin:6px 0 12px">${cases.map(c =>
+      `<span class="pill">${esc(c.case_id)}${c.season && c.season!==c.case_id ? " ("+esc(c.season)+")" : ""}: ${c.outdoor_f!=null?esc(c.outdoor_f)+" F outdoor":""}${
+        c.shaft_f!=null?", "+esc(c.shaft_f)+" F shaft":""}${c.wind_mph!=null?", wind "+esc(c.wind_mph):""}</span>`).join("")}</div>` : "";
+  const rows = Object.entries(bal).map(([sid,b]) => {
+    const x = ctxOf(sid), dp = b.dp_max_achieved;
+    const F = (dp!=null) ? initiateForce(dp, L) : null;
+    const arch = archOf(sid), ai = APPROACH.arch.order.indexOf(arch);
+    return `<tr><td style="white-space:nowrap"><strong>${esc(labelOf(sid))}</strong><div class="small muted">${esc(sid)}</div></td>
+      <td>${arch ? `<span class="legend" style="margin:0"><span style="--c:${ai<0?"var(--s-none)":`var(${SLOTVAR[ai]})`}"><span class="sw"></span>${esc(APPROACH.arch.name[arch]||arch)}</span></span>` : ABSENT}</td>
+      <td>${b.setpoint_cfm!=null ? b.setpoint_cfm.toLocaleString() : ABSENT}</td>
+      <td>${(b.cases_passed||[]).map(c=>esc(String(c).split("@")[0])).join(", ") || ABSENT}</td>
+      <td>${dpBadge(b.dp_min_achieved, x)}</td>
+      <td>${dpBadge(dp, x)}</td>
+      <td style="min-width:200px">${dpZone(b.dp_min_achieved, dp, x, 220)}</td>
+      <td>${F!=null ? `<span class="dp ${F>L.limit?"st-crit":"st-good"}" title="${F>L.limit?"Over":"Under"} the ${L.limit} lbf initiate limit"><span class="g">${F>L.limit?"▲":"✓"}</span>${F.toFixed(1)} lbf</span>` : ABSENT}</td>
+    </tr>`;
+  }).join("");
+  const common = Object.values(bal).filter(b => (b.cases_passed||[]).length > 1
+    && b.band_min_cfm === b.band_max_cfm).length;
+  const balance = `
+    <h3 style="margin-top:18px">Achieved pressure by system</h3>
+    ${caseLine}
+    ${common ? `<p class="small"><span class="chip c-measured">Common setpoint</span>
+      ${common} system${common===1?"":"s"} carry one CFM across every recorded case.
+      One setpoint by construction, not a winner picked across cases.</p>` : ""}
+    ${dpLegend("stair")}
+    <div class="card scroll"><table>
+      <thead><tr><th>System</th><th>Approach</th><th>Setpoint cfm</th><th>Cases</th><th>dP min</th>
+      <th>dP max</th><th>Against the criteria</th><th>Initiate force at dP max</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="8" class="absent">No balance block on this record.</td></tr>'}</tbody>
+    </table></div>
+    <p class="small muted">Zones on each track: red below the compliance floor, amber below the
+      0.15 search band, green inside the band, orange above it, red past the pressure where the
+      initiate force reaches ${L.limit} lbf (Handbook Eq. 9.3, leaf W ${L.W} ft, A ${L.A} sf,
+      d ${L.d} ft, Fdc ${L.Fdc} lbf, ${esc(L.basis)}). The solid bar between the two dots is the achieved range.
+      Door force is report time only and never enters the CFM search.</p>`;
+
+  // per case matrix, when the record carries per case results
   const bySys = {};
   cases.forEach(c => Object.entries(c.results||{}).forEach(([sid,r]) => {
     (bySys[sid] = bySys[sid] || []).push({c,r});
   }));
-  return Object.entries(bySys).map(([sid, items]) => {
-    const setpoints = new Set(items.map(x => x.r.ahs_cfm));
-    const same = setpoints.size === 1 && items.length > 1;
+  const matrix = Object.entries(bySys).map(([sid, items]) => {
+    const x = ctxOf(sid);
     const rows = items.map(({c,r}) => {
       const dmin = r.dp_min||{}, dmax = r.dp_max||{};
       return `<tr>
@@ -846,24 +1085,55 @@ function tabCases(rec){
         <td>${esc(c.outdoor_f ?? "")} / ${esc(c.shaft_f ?? "")}</td>
         <td>${esc(c.wind_mph ?? "")}</td>
         <td>${r.ahs_cfm!=null ? r.ahs_cfm.toLocaleString() : ABSENT}</td>
-        <td>${dmin.value!=null ? dmin.value.toFixed(3)+" @ "+esc(dmin.floor) : ABSENT}</td>
-        <td>${dmax.value!=null ? dmax.value.toFixed(3)+" @ "+esc(dmax.floor) : ABSENT}</td>
-        <td>${r.pass_min_dp===true?"pass":r.pass_min_dp===false?
-          '<span class="chip c-missing">fail</span>':ABSENT}</td>
+        <td>${dmin.value!=null ? dpBadge(dmin.value,x)+" <span class='small muted'>@ "+esc(dmin.floor)+"</span>" : ABSENT}</td>
+        <td>${dmax.value!=null ? dpBadge(dmax.value,x)+" <span class='small muted'>@ "+esc(dmax.floor)+"</span>" : ABSENT}</td>
+        <td>${r.pass_min_dp===true?'<span class="dp st-good"><span class="g">✓</span>pass</span>':r.pass_min_dp===false?
+          '<span class="dp st-crit"><span class="g">✕</span>fail</span>':ABSENT}</td>
         <td>${(r.flags||[]).join(", ")||"none"}</td></tr>`;
     }).join("");
     const profiles = items.filter(x => x.r.dp_by_floor).map(({c,r}) =>
       `<details><summary>${esc(c.case_id)} per floor profile</summary>
         ${profileSvg(r.dp_by_floor, rec)}</details>`).join("");
-    return `<h3>${esc(sid)}</h3>
-      ${same ? `<p class="small"><span class="chip c-measured">Common setpoint</span>
-        ${[...setpoints][0].toLocaleString()} cfm across ${items.length} cases.
-        One setpoint by construction, not a winner picked across cases.</p>`:""}
+    return `<h3>${esc(labelOf(sid))}</h3>
       <div class="card scroll"><table>
         <thead><tr><th>Case</th><th>Season</th><th>Outdoor / shaft F</th><th>Wind</th>
         <th>AHS cfm</th><th>dP min</th><th>dP max</th><th>Passes min</th><th>Flags</th></tr></thead>
         <tbody>${rows}</tbody></table></div>${profiles}`;
   }).join("");
+
+  // per floor heat grid from the POD rows: every door the run reported outside the band
+  const pod = (contam.pod || []).map(p => ({...p, dp: Number(p.dp)})).filter(p => Number.isFinite(p.dp));
+  const caseIds = cases.length ? cases.map(c => c.case_id) : [...new Set(pod.map(p => p.case_id||"run"))];
+  const bySysPod = {};
+  pod.forEach(p => { (bySysPod[p.system_id] = bySysPod[p.system_id] || []).push(p); });
+  const heat = Object.entries(bySysPod).map(([sid, rows]) => {
+    const x = ctxOf(sid);
+    const levels = [...new Set(rows.map(r => String(r.level)))]
+      .sort((a,b) => (parseFloat(b)||0) - (parseFloat(a)||0));
+    const body = levels.map(lv => `<tr><td class="lvl">L${esc(lv)}</td>${caseIds.map(cid => {
+        const hits = rows.filter(r => String(r.level) === lv && (r.case_id||"run") === cid);
+        if (!hits.length) return `<td class="nil" title="Not reported outside the band">·</td>`;
+        const r = hits.reduce((m, h) => Math.abs(h.dp - 0.2) > Math.abs(m.dp - 0.2) ? h : m, hits[0]);
+        const k = dpKind(r.dp, x), s = DPST[k] || {c:"st-none", g:"", t:""};
+        const ext = /ambient|exterior/i.test(r.reason||"") || r.door === "exterior";
+        return `<td class="cell ${s.c}${ext?" ext":""}" data-tip="${esc(`<strong>${labelOf(sid)}, level ${lv}, ${cid}</strong><br>${r.dp.toFixed(3)} in. w.g., ${s.t.toLowerCase()}${hits.length>1?`<br>${hits.length} doors, worst shown`:""}${ext?"<br>Exterior door: does not bind the interior CFM":""}`)}"><span class="g" style="color:var(--c)">${s.g}</span> ${r.dp.toFixed(3)}</td>`;
+      }).join("")}</tr>`).join("");
+    return `<div class="card" style="margin:0"><div class="row" style="justify-content:space-between">
+        <strong>${esc(labelOf(sid))}</strong><span class="pill">${rows.length} door${rows.length===1?"":"s"}</span></div>
+      <table class="heat"><thead><tr><th></th>${caseIds.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead>
+      <tbody>${body}</tbody></table></div>`;
+  }).join("");
+  const heatBlock = pod.length ? `
+    <h3 style="margin-top:22px">Floors outside the band</h3>
+    <p class="small muted">Every door the run reported outside the 0.15 to 0.30 band, by floor
+      (top of the building at the top) and by case. A dot means the run did not report that floor
+      outside the band; it is not a measured in-band value. Dashed edge: exterior door, which
+      does not bind the interior CFM.</p>
+    <div class="heatwrap">${heat}</div>` : "";
+
+  if (!Object.keys(bal).length && !matrix && !pod.length)
+    return `<div class="banner">No balance block, case matrix or POD rows on this record yet.</div>`;
+  return balance + matrix + heatBlock;
 }
 
 function profileSvg(prof, rec){
@@ -1177,6 +1447,7 @@ function trendPoints(){
         cls, label:s.label||s.id,
         design:d,
         levels:Number(s.levels_served_count) || null,
+        perlevel:(Number(s.levels_served_count) ? d / Number(s.levels_served_count) : null),
         stories:Number((rec.building||{}).NumberofStories) || null,
         track:(rec.building||{}).building_status || null,
         vestibule: cls==="stair" ? !!s.vestibule : null,
@@ -1238,11 +1509,12 @@ function viewTrends(){
   const tracks = {};
   pts.forEach(p => { tracks[p.track||"missing"] = (tracks[p.track||"missing"]||0)+1; });
   const vest = pts.filter(p => p.cls==="stair" && p.dpmax!=null);
+  const vestCtx = {cls:"stair", floor:null, blo:0.15, bhi:0.30, ceil:forceLimitDp({W:3,A:21,d:0.25,Fdc:9,limit:30})};
   const vestRows = vest.length ? vest.map(p => `<tr><td>${esc(p.project)} ${esc(p.label)}</td>
-      <td>${p.vestibule?"yes":"no"}</td><td>${p.dpmax.toFixed(3)}</td></tr>`).join("")
+      <td>${p.vestibule?"yes":"no"}</td><td>${dpBadge(p.dpmax, {...vestCtx, floor: p.vestibule ? 0.05 : 0.10})}</td></tr>`).join("")
     : `<tr><td colspan="3" class="absent">No achieved pressures recorded yet.</td></tr>`;
   const archRows = pts.filter(p=>p.arch).map(p =>
-    `<tr><td>${esc(p.project)} ${esc(p.label)}</td><td>${esc(p.arch)}</td>
+    `<tr><td>${esc(p.project)} ${esc(p.label)}</td><td><span class="legend" style="margin:0"><span style="--c:${colorOf(p.arch,"arch")}"><span class="sw"></span>${esc(APPROACH.arch.name[p.arch]||p.arch)}</span></span></td>
      <td>${p.stories ?? "?"}</td><td>${p.levels ?? "?"}</td></tr>`).join("")
     || `<tr><td colspan="4" class="absent">No injection architecture recorded.</td></tr>`;
 
@@ -1265,9 +1537,19 @@ function viewTrends(){
       <p class="small muted">Systems by track: ${Object.entries(tracks)
         .map(([k,v])=>`${v} ${k}`).join(", ")}.</p>
     </div>
-    ${scatter(pts,"levels","design","levels served","design cfm")}
     ${scatter(pts,"stories","spread","stories","spread ratio")}
   </div>
+
+  <div class="row" style="margin:22px 0 6px;justify-content:space-between">
+    <h3 style="margin:0">Trend lines by smoke control approach</h3>
+    <div class="seg" role="group" aria-label="Group trend lines by">${Object.entries(APPROACH).map(([k,a]) =>
+      `<button aria-pressed="${k===TREND_GROUP}" onclick="setTrendGroup('${k}')">${esc(a.label)}</button>`).join("")}</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr">
+    ${trendChart(pts,"levels","design","levels served","design cfm",TREND_GROUP,"cfm per level")}
+    ${trendChart(pts,"stories","perlevel","stories","cfm per level served",TREND_GROUP,"per story")}
+  </div>
+  ${approachTable(pts, TREND_GROUP)}
 
   <h3>Vestibule against achieved pressure</h3>
   <div class="card scroll"><table>
